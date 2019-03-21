@@ -1,6 +1,6 @@
-# Steam Sensor
+# GG Detector
 
-Trello: https://trello.com/b/P2SWP7MI/steam-sensor
+Trello: https://trello.com/b/P2SWP7MI/gg-detector
 
 Steam API:
 ```
