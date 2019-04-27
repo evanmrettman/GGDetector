@@ -75,3 +75,8 @@ def endJSON(filepath):
     f.write("}")
     #print('}')
     f.close()
+
+def appendERROR(filepath, count):
+    f = open(filepath,'a',newline='')
+    f.write('Error at appid: %d \n' % (count))
+    f.close()

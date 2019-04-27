@@ -10,6 +10,8 @@ VERSION = 0
 F_IN = "data"
 F_ADD = "%s/additional_files" % F_IN
 F_OUT = "output/v_%02d" % VERSION
+F_OUT_JSON = "data/output/appinfo.json"
+F_OUT_ERROR = "data/output/errorids.json"
 
 #F_IN_LIST = "list_short.json"
 F_IN_LIST = "list_4_26_19.json"
@@ -17,6 +19,8 @@ F_IN_LIST = "list_4_26_19.json"
 def main():
     log.info("Hello from Steam Sensor")
 
+    #test fail
+    parse.appendERROR(F_OUT_ERROR, 0)
 
     #applist = parse.parseApps("%s/list_4_26_19.json" % (F_IN))
 

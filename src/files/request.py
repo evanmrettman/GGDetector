@@ -7,6 +7,7 @@ import utility.logging as log
 import files.parse as parse
 
 F_OUT_JSON = "data/output/appinfo.json"
+F_OUT_ERROR = "data/output/errorids.json"
 
 # given a list of appids, request 1 app from the list each second until all apps are requested.
 def requestEachAppToCSV(appids,filepath):
@@ -32,8 +33,9 @@ def requestEachAppToCSV(appids,filepath):
         # deal with time
         end = time.time() # end timer
         delta = (end-start) # record delta
-        if(delta >= 1.001): 
-            time.sleep(1.001 - delta) # delay to avoid DDOS detection (try to ensure 1.01 seconds between each request)
+        # API request limit: 10 per 10 seconds, 200 per 5 minutes (I'll abide by this one, which is 1 per 1.5 seconds), 100,000 per day (this is bigger than needed).
+        if(delta >= 1.501): 
+            time.sleep(1.501 - delta) # delay to avoid throttling (try to ensure 1.501 seconds between each request)
 
         # request app
         tempApp = requestApp(app["appid"])
@@ -68,11 +70,14 @@ def requestEachAppToCSV(appids,filepath):
 def requestApp(appid):
     wait_increase = 0
     req = requests.get('https://store.steampowered.com/api/appdetails?appids=%d' % (appid))
-    while(req.status_code != requests.codes["ok"]): #This loop will be necassary to check if a request failed or not.
+    while(req.status_code != requests.codes["ok"] and wait_increase < 1000): #This loop will be necassary to check if a request failed or not.
         print("Request on %d failed! Waiting %d seconds before next request..." % (appid, (10.01 + wait_increase)))
-        time.sleep(10.01+wait_increase) #Steam allows only 10 requests every 10 seconds, if a call fails, I don't want to be marked as a DDOS, so wait the full 10 + .01
-        wait_increase = wait_increase + 5
-        req = requests.get('https://store.steampowered.com/api/appdetails?appids=%d' % (appid))
+        time.sleep(10.01+wait_increase) # Steam allows only 200 requests every 5 minutes, if a call fails, I don't want to be marked as a DDOS, so after two fails, wait the full 5
+        wait_increase = wait_increase + 300.1 # by this point I have probably hit the daily limit, so this is kind of pointless
+        if(wait_increase < 700):
+            req = requests.get('https://store.steampowered.com/api/appdetails?appids=%d' % (appid))
+        else:
+            parse.appendERROR(F_OUT_ERROR, appid)
     #print(req.json())
 
     return req.json()
