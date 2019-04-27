@@ -17,7 +17,7 @@ def requestEachAppToCSV(appids,filepath):
 
     count = 0
     total = len(appids["applist"]["apps"]["app"])
-    numberOfMessages = 20
+    numberOfMessages = math.ceil(total/5)
     name = "Requesting data and writing to CSV file..."
 
     start = time.time()
