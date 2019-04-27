@@ -6,10 +6,6 @@ class AppEntry:
     def __init__(self,app_id,app_name):
         self._id = str(app_id)
         self._name = str(app_name)
-        self._dev
-        self._publisher
-        self._owner_range
-        self.
 
     def get_id(self):
         return self._id

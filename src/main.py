@@ -11,8 +11,8 @@ F_IN = "data"
 F_ADD = "%s/additional_files" % F_IN
 F_OUT = "output/v_%02d" % VERSION
 
-F_IN_LIST = "list_short.json"
-#F_IN_LIST = "list_4_26_19.json"
+#F_IN_LIST = "list_short.json"
+F_IN_LIST = "list_4_26_19.json"
 
 def main():
     log.info("Hello from Steam Sensor")

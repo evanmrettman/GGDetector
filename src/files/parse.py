@@ -56,19 +56,22 @@ def writeDict(filepath,d):
 
 def createJSON(filepath):
     f = open(filepath, 'w',newline='')
-    f.write('{"all":')
-    print('{"all":')
+    f.write('{')
+    #print('{')
     f.close()
 
-def appendJSON(filepath, data):
+def appendJSON(filepath, data, count):
     f = open(filepath,'a',newline='')
-    #json.dump(data, f)
-    f.write(",")
-    print(',')
+    if(count <= 1):
+        f.write(' "count%d":' % (count))
+    else:
+        f.write(', "count%d":' % (count))
+    json.dump(data, f)
+    #rint(',')
     f.close()
 
 def endJSON(filepath):
     f = open(filepath, 'a',newline='')
     f.write("}")
-    print('}')
+    #print('}')
     f.close()

@@ -51,7 +51,7 @@ def requestEachAppToCSV(appids,filepath):
         #allApps.append(requestApp(app["appid"])) #DEBUG REMOVE BEFORE RUNNING ON REAL DATA TO AVOID NOMEM ERROR <------- REMOVE -- REMOVE -- REMOVE -- REMOVE -- REMOVE!!!
         # Now write to a CSV file
         
-        parse.appendJSON(F_OUT_JSON,tempApp) # COMMENT THIS BACK IN
+        parse.appendJSON(F_OUT_JSON,tempApp,count) # COMMENT THIS BACK IN
 
         # Sleep
         if(delta >= 1.001): 
