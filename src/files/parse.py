@@ -3,6 +3,7 @@ import csv
 import os
 import objects.app_entry as AppEntry
 
+# parses and loads an applist json which is then returns
 def parseApps(filepath):
     with open(filepath, "r", encoding="utf8") as f:
         loaded_json = json.loads(f.read())
@@ -24,6 +25,8 @@ def parseApps(filepath):
         print(x["name"])
         count = count + 1
     print(count)
+
+    return loaded_json
 
 def appendCSV(filepath,data):
     f = open(filepath,"a",newline='')
