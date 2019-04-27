@@ -31,5 +31,44 @@ def parseApps(filepath):
 def appendCSV(filepath,data):
     f = open(filepath,"a",newline='')
     writer = csv.writer(f)
-    writer.writerow(data)
+    writer.writerows(data)
+    f.close()
+
+def createCSV(filepath,data):
+    f = open(filepath,"w",newline='')
+    writer = csv.writer(f)
+    writer.writerows(data)
+    f.close()
+
+def writeDict(filepath,d):
+    f = open(filepath,'w',newline='')
+    writer = csv.writer(f)
+
+    tempList = []
+    for key in d.keys():
+        tempList.append(key)
+
+    writer.writerow(tempList)
+    #writer.writerow(d[next(iter(d))].params())
+    for v in d.values():
+        writer.writerow(v.values())
+    f.close()
+
+def createJSON(filepath):
+    f = open(filepath, 'w',newline='')
+    f.write('{"all":')
+    print('{"all":')
+    f.close()
+
+def appendJSON(filepath, data):
+    f = open(filepath,'a',newline='')
+    #json.dump(data, f)
+    f.write(",")
+    print(',')
+    f.close()
+
+def endJSON(filepath):
+    f = open(filepath, 'a',newline='')
+    f.write("}")
+    print('}')
     f.close()

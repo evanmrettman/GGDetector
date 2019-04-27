@@ -4,7 +4,9 @@ import requests
 import datetime
 import math
 import utility.logging as log
-import parse as parse
+import files.parse as parse
+
+F_OUT_JSON = "data/output/appinfo.json"
 
 # given a list of appids, request 1 app from the list each second until all apps are requested.
 def requestEachAppToCSV(appids,filepath):
@@ -22,6 +24,8 @@ def requestEachAppToCSV(appids,filepath):
     end = time.time()
     delta = (end - start)
 
+    parse.createJSON(F_OUT_JSON) # start the JSON file
+
     log.processing(name)
     for app in appids["applist"]["apps"]["app"]:
 
@@ -37,12 +41,17 @@ def requestEachAppToCSV(appids,filepath):
         start = time.time()
 
 
+
+        # print(tempApp)
+
+
         log.sofar(name,count,total,numberOfMessages)
         count = count + 1
 
         #allApps.append(requestApp(app["appid"])) #DEBUG REMOVE BEFORE RUNNING ON REAL DATA TO AVOID NOMEM ERROR <------- REMOVE -- REMOVE -- REMOVE -- REMOVE -- REMOVE!!!
         # Now write to a CSV file
-        parse.appendCSV(filepath,tempApp)
+        
+        parse.appendJSON(F_OUT_JSON,tempApp) # COMMENT THIS BACK IN
 
         # Sleep
         if(delta >= 1.001): 
@@ -50,6 +59,8 @@ def requestEachAppToCSV(appids,filepath):
         
         # Now request the app
     
+    parse.endJSON(F_OUT_JSON) # end the JSON file
+
     time.sleep(3) # Debug, remove this later
     #print(allApps)
     print(count)
