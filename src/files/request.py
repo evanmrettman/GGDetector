@@ -6,7 +6,7 @@ import math
 import utility.logging as log
 import files.parse as parse
 
-F_OUT_JSON = "data/output/appinfo.json"
+F_OUT_JSON = "data/output/apps/" # HAVE TO ADD POSTFIX .json IN PARSE
 F_OUT_ERROR = "data/output/errorids.json"
 
 # given a list of appids, request 1 app from the list each second until all apps are requested.
@@ -25,7 +25,7 @@ def requestEachAppToCSV(appids,filepath):
     end = time.time()
     delta = (end - start)
 
-    parse.createJSON(F_OUT_JSON) # start the JSON file
+    #parse.createJSON(F_OUT_JSON) # start the JSON file
 
     log.processing(name)
     for app in appids["applist"]["apps"]["app"]:
@@ -53,15 +53,12 @@ def requestEachAppToCSV(appids,filepath):
         #allApps.append(requestApp(app["appid"])) #DEBUG REMOVE BEFORE RUNNING ON REAL DATA TO AVOID NOMEM ERROR <------- REMOVE -- REMOVE -- REMOVE -- REMOVE -- REMOVE!!!
         # Now write to a CSV file
         
-        parse.appendJSON(F_OUT_JSON,tempApp,count) # COMMENT THIS BACK IN
-
-        # Sleep
-        if(delta >= 1.001): 
-            time.sleep(1.001 - delta) # delay to avoid DDOS detection
+        # parse.appendJSON(F_OUT_JSON,tempApp,count) # COMMENT THIS BACK IN
+        parse.writeJSON(F_OUT_JSON,tempApp,count,app["appid"])
         
         # Now request the app
     
-    parse.endJSON(F_OUT_JSON) # end the JSON file
+    #parse.endJSON(F_OUT_JSON) # end the JSON file
 
     time.sleep(3) # Debug, remove this later
     #print(allApps)

@@ -67,13 +67,17 @@ def appendJSON(filepath, data, count):
     else:
         f.write(', "count%d":' % (count))
     json.dump(data, f)
-    #rint(',')
     f.close()
 
 def endJSON(filepath):
     f = open(filepath, 'a',newline='')
     f.write("}")
     #print('}')
+    f.close()
+
+def writeJSON(filepath,data,count,appid):
+    f = open("%s%d_%d_app.json" % (filepath,count,appid), 'w',newline='')
+    json.dump(data, f)
     f.close()
 
 def appendERROR(filepath, count):

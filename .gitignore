@@ -113,3 +113,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .vscode/launch.json
+src/data/output/appinfo - Copy.json
+src/data/output/errorids.json
