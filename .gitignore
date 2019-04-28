@@ -115,3 +115,5 @@ dmypy.json
 .vscode/launch.json
 src/data/output/appinfo - Copy.json
 src/data/output/errorids.json
+*.json
+*.json
