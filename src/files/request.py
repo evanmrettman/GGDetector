@@ -29,6 +29,9 @@ def requestEachAppToCSV(appids,filepath):
 
     log.processing(name)
     for app in appids["applist"]["apps"]["app"]:
+        if count <= 29954:
+            count += 1
+            continue
 
         # deal with time
         end = time.time() # end timer
