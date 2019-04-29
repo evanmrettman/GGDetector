@@ -41,6 +41,8 @@ def main():
         log.processing("Converting JSON data to Game Objects")
         games = pp.CreateGames(apps)
         log.info("Created %d game objects." % len(games))
+        for game in games.values():
+            log.info(game.string())
 
 
 if __name__ == "__main__":

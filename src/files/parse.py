@@ -1,7 +1,8 @@
 import json
 import csv
 import os
-import objects.app_entry as AppEntry
+import objects.game as Game
+import utility.logging as log
 
 # parses and loads an applist json which is then returned
 def parseApps(filepath):
@@ -12,11 +13,13 @@ def parseApps(filepath):
 # treat all files in the given directory as json and parse them as such then return a list of dictionaries contianing the information
 def readDirectoryJSON(directory):
     dicts = []
-    for i, file in enumerate(os.listdir(directory)):
-        if True and i >= 10: # debug: only grab a sample set for now
+    dir_files = os.listdir(directory)
+    for i, file in enumerate(dir_files):
+        if True and i >= 5000: # debug: only grab a sample set for now
             break
         with open(directory+file, "r", encoding="utf8") as f:
             dicts.append(json.loads(f.readline()))
+        log.sofar("Reading JSON files from %s" % directory,i,len(dir_files),100)
     return dicts
 
 def readJSON(filepath):

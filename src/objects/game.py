@@ -19,14 +19,13 @@ class Game:
         return d[key] if key in d.keys() else None
 
     # given a dictionary of a sucessful json request and it is a game, parse it as game object
-    def __init__(self, game_dict):
-        data = game_dict[game_dict.keys()[0]]["data"]
+    def __init__(self, steam_response):
 
-        
+        data = steam_response[list(steam_response.keys())[0]]["data"]
 
-        self._id = self.__initHelp(data,"steamapp_id")
+        self._id = self.__initHelp(data,"steam_appid")
         self._type = self.__initHelp(data,"type")
-        self._name = data["name"]
+        self._name = self.__initHelp(data,"name")
         self._required_age = self.__initHelp(data,"required_age")
         self._is_free = self.__initHelp(data,"is_free")
         #self._supported_languages = self.__initHelp(data,"supported_languages") # This may have to be parsed against a list of known languages (steamspy just lists this though)
@@ -39,7 +38,7 @@ class Game:
         ss = self.__initHelp(data,"screenshots")
         self._screenshot_count = len(ss) if ss != None else 0
         mo = self.__initHelp(data,"movies")
-        self._movie_count = len(ss) if mo != None else 0
+        self._movie_count = len(mo) if mo != None else 0
         
         self._release_date = self.__initHelp(data,"release_date") # coming_soon, date
         
@@ -87,4 +86,4 @@ class Game:
         return self._release_date
 
     def string(self):
-        return "%s" % (self._name)
+        return "%10d : %s" % (self._id,self._name)
