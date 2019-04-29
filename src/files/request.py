@@ -29,7 +29,7 @@ def requestEachAppToCSV(appids,filepath):
 
     log.processing(name)
     for app in appids["applist"]["apps"]["app"]:
-        if count <= 29954:
+        if count <= 68760:
             count += 1
             continue
 
