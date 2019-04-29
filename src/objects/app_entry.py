@@ -25,22 +25,23 @@ class Game:
         
 
         self._id = self.__initHelp(data,"steamapp_id")
-        self._type = data["type"]
+        self._type = self.__initHelp(data,"type")
         self._name = data["name"]
-        self._required_age = data["required_age"]
-        self._is_free = data["is_free"]
-        self._supported_languages = data["supported_languages"] # This may have to be parsed against a list of known languages
-        self._developers = data["developers"]
-        self._publishers = data["publishers"]
-        self._platforms = data["platforms"] # windows, mac, linux
-        self._categories = data["categories"] # [id, descriptions]
-        self._genres = data["genres"] # [id, description]
+        self._required_age = self.__initHelp(data,"required_age")
+        self._is_free = self.__initHelp(data,"is_free")
+        #self._supported_languages = self.__initHelp(data,"supported_languages") # This may have to be parsed against a list of known languages (steamspy just lists this though)
+        self._developers = self.__initHelp(data,"developers")
+        self._publishers = self.__initHelp(data,"publishers")
+        self._platforms = self.__initHelp(data,"platforms") # windows, mac, linux
+        self._categories = self.__initHelp(data,"categories") # [id, descriptions]
+        self._genres = self.__initHelp(data,"genres") # [id, description]
 
         ss = self.__initHelp(data,"screenshots")
         self._screenshot_count = len(ss) if ss != None else 0
-        self._movie_count = 0
+        mo = self.__initHelp(data,"movies")
+        self._movie_count = len(ss) if mo != None else 0
         
-        self._release_date = data["release_date"] # coming_soon, date
+        self._release_date = self.__initHelp(data,"release_date") # coming_soon, date
         
 
     def get_id(self):
