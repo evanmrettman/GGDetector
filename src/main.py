@@ -18,16 +18,21 @@ F_IN_LIST = "list_4_26_19.json"
 
 def main():
 
-    GetTestingData = False
-
+    GetTestingData = True
+    SteamAPI = False
+    SteamSpy = True
 
     if GetTestingData:
         log.processing("Gathering Application List")
         applist = parse.parseApps("%s/%s" % (F_IN,F_IN_LIST))
         log.info("Retrieved %d apps." % len(applist))
 
-        log.processing("Requesting AppsIDs from Steam API")
-        request.requestEachAppToJSON(applist,"%s_%s" % (F_IN, F_IN_LIST))
+        if SteamAPI:
+            log.processing("Requesting AppsIDs from Steam API")
+            request.requestEachAppToJSON_SteamAPI(applist,"%s_%s" % (F_IN, F_IN_LIST))
+        if SteamSpy:
+            log.processing("Requesting AppIds from Steam Spy")
+            request.requestEachAppToJSON_SteamAPI(applist)
     else:
         log.processing("Gathering JSON Dictionaries from Files")
         apps = parse.readDirectoryJSON(F_APPS)

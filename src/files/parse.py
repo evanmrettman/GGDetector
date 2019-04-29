@@ -7,26 +7,6 @@ import objects.app_entry as AppEntry
 def parseApps(filepath):
     with open(filepath, "r", encoding="utf8") as f:
         loaded_json = json.loads(f.read())
-        #print(f.read())
-
-    # below is a debug loop to print the json file.
-    #for x in loaded_json:
-        #print(loaded_json[x])
-        #print(x)
-        #print(loaded_json["applist"])
-
-    #for key in loaded_json.keys():
-        #print(key)
-
-    count = 0
-    if False:
-        for x in loaded_json["applist"]["apps"]["app"]:
-            print("")
-            print(x["appid"])
-            print(x["name"])
-            count = count + 1
-    print(count)
-
     return loaded_json
 
 # treat all files in the given directory as json and parse them as such then return a list of dictionaries contianing the information
@@ -36,7 +16,7 @@ def readDirectoryJSON(directory):
         if True and i >= 10: # debug: only grab a sample set for now
             break
         with open(directory+file, "r", encoding="utf8") as f:
-            dicts.append(json.loads(f.readlines))
+            dicts.append(json.loads(f.readline()))
     return dicts
 
 def readJSON(filepath):
