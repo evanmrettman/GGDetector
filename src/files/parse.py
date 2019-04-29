@@ -3,7 +3,7 @@ import csv
 import os
 import objects.app_entry as AppEntry
 
-# parses and loads an applist json which is then returns
+# parses and loads an applist json which is then returned
 def parseApps(filepath):
     with open(filepath, "r", encoding="utf8") as f:
         loaded_json = json.loads(f.read())
@@ -25,6 +25,30 @@ def parseApps(filepath):
             print(x["appid"])
             print(x["name"])
             count = count + 1
+    print(count)
+
+    return loaded_json
+
+# treat all files in the given directory as json and parse them as such then return a list of dictionaries contianing the information
+def readDirectoryJSON(directory):
+    dicts = []
+    for i, file in enumerate(os.listdir(directory)):
+        if True and i >= 10: # debug: only grab a sample set for now
+            break
+        with open(directory+file, "r", encoding="utf8") as f:
+            dicts.append(json.loads(f.readlines))
+    return dicts
+
+def readJSON(filepath):
+    with open(filepath, "r", encoding="utf8") as f:
+        loaded_json = json.loads(f.read())
+
+    count = 0
+    for x in loaded_json["applist"]["apps"]["app"]:
+        print("")
+        print(x["appid"])
+        print(x["name"])
+        count = count + 1
     print(count)
 
     return loaded_json
