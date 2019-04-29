@@ -1,25 +1,47 @@
-class AppEntry:
+class Game:
 
     _id = 0
     _type = ""
     _name = ""
-    _steam_appid = ""
     _required_age = 0
     _is_free = False
     _supported_languages = "" # This may have to be parsed against a list of known languages
     _developers = []
     _publishers = []
-    _platforms = [False,False,False] # windows, mac, linux
+    _platforms = [] # windows, mac, linux
     _categories = [] # [id, descriptions]
     _genres = [] # [id, description]
     _screenshot_count = 0
     _movie_count = 0
     _release_date = [] # coming_soon, date
 
+    def __initHelp(self,d,key):
+        return d[key] if key in d.keys() else None
 
-    def __init__(self, app_id, type, app_name, steam_appid, required_age, is_free, supported_languages, developers, publishers, platforms, cateogries, genres, screenshot_count, movie_count, release_date):
-        self._id = str(app_id)
-        self._name = str(app_name)
+    # given a dictionary of a sucessful json request and it is a game, parse it as game object
+    def __init__(self, game_dict):
+        data = game_dict[game_dict.keys()[0]]["data"]
+
+        
+
+        self._id = self.__initHelp(data,"steamapp_id")
+        self._type = data["type"]
+        self._name = data["name"]
+        self._required_age = data["required_age"]
+        self._is_free = data["is_free"]
+        self._supported_languages = data["supported_languages"] # This may have to be parsed against a list of known languages
+        self._developers = data["developers"]
+        self._publishers = data["publishers"]
+        self._platforms = data["platforms"] # windows, mac, linux
+        self._categories = data["categories"] # [id, descriptions]
+        self._genres = data["genres"] # [id, description]
+
+        ss = self.__initHelp(data,"screenshots")
+        self._screenshot_count = len(ss) if ss != None else 0
+        self._movie_count = 0
+        
+        self._release_date = data["release_date"] # coming_soon, date
+        
 
     def get_id(self):
         return self._id
@@ -29,9 +51,6 @@ class AppEntry:
 
     def get_type(self):
         return self._type
-    
-    def get_steam_appid(self):
-        return self._steam_appid
 
     def get_required_age(self):
         return self._required_age

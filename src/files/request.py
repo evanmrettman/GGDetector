@@ -10,22 +10,16 @@ F_OUT_JSON = "data/output/apps/" # HAVE TO ADD POSTFIX .json IN PARSE
 F_OUT_ERROR = "data/output/errorids.json"
 
 # given a list of appids, request 1 app from the list each second until all apps are requested.
-def requestEachAppToCSV(appids,filepath):
-
-
-    allApps = [] #DEBUG
-
+def requestEachAppToJSON(appids,filepath): # 
+    # API request limit: 10 per 10 seconds, 200 per 5 minutes (I'll abide by this one, which is 1 per 1.5 seconds), 100,000 per day (this is bigger than needed).
 
     count = 0
     total = len(appids["applist"]["apps"]["app"])
     numberOfMessages = math.ceil(total/5)
-    name = "Requesting data and writing to CSV file..."
-
+    name = "Requesting data and writing to JSON file..."
     start = time.time()
     end = time.time()
     delta = (end - start)
-
-    #parse.createJSON(F_OUT_JSON) # start the JSON file
 
     log.processing(name)
     for app in appids["applist"]["apps"]["app"]:
@@ -33,38 +27,19 @@ def requestEachAppToCSV(appids,filepath):
             count += 1
             continue
 
-        # deal with time
         end = time.time() # end timer
         delta = (end-start) # record delta
-        # API request limit: 10 per 10 seconds, 200 per 5 minutes (I'll abide by this one, which is 1 per 1.5 seconds), 100,000 per day (this is bigger than needed).
+
         if(delta <= 1.501): 
             time.sleep(1.501 - delta) # delay to avoid throttling (try to ensure 1.501 seconds between each request)
 
-        # request app
-        tempApp = requestApp(app["appid"])
-        # start timer
-        start = time.time()
-
-
-
-        # print(tempApp)
-
-
+        tempApp = requestApp(app["appid"]) # Request the app from steam api
+        start = time.time() # Start the timer.
         log.sofar(name,count,total,numberOfMessages)
         count = count + 1
-
-        #allApps.append(requestApp(app["appid"])) #DEBUG REMOVE BEFORE RUNNING ON REAL DATA TO AVOID NOMEM ERROR <------- REMOVE -- REMOVE -- REMOVE -- REMOVE -- REMOVE!!!
-        # Now write to a CSV file
-        
-        # parse.appendJSON(F_OUT_JSON,tempApp,count) # COMMENT THIS BACK IN
         parse.writeJSON(F_OUT_JSON,tempApp,count,app["appid"])
-        
-        # Now request the app
-    
-    #parse.endJSON(F_OUT_JSON) # end the JSON file
 
     time.sleep(3) # Debug, remove this later
-    #print(allApps)
     print(count)
 
 def requestApp(appid):
