@@ -18,9 +18,9 @@ F_IN_LIST = "list_4_26_19.json"
 
 def main():
 
-    GetTestingData = True
+    GetTestingData = False
     SteamAPI = False
-    SteamSpy = True
+    SteamSpy = False
 
     if GetTestingData:
         log.processing("Gathering Application List")
