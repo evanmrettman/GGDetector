@@ -19,11 +19,12 @@ def parseApps(filepath):
         #print(key)
 
     count = 0
-    for x in loaded_json["applist"]["apps"]["app"]:
-        print("")
-        print(x["appid"])
-        print(x["name"])
-        count = count + 1
+    if False:
+        for x in loaded_json["applist"]["apps"]["app"]:
+            print("")
+            print(x["appid"])
+            print(x["name"])
+            count = count + 1
     print(count)
 
     return loaded_json
