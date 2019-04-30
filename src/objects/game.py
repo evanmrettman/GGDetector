@@ -15,8 +15,8 @@ class Game:
     _genres = [] # [id, description]
     _screenshot_count = 0
     _movie_count = 0
-    _coming_soon = defaultdict(bool)
-    _release_date = defaultdict(lambda: 'ERROR')
+    _coming_soon = ""
+    _release_date = ""
     
     #15 vector components from steam spy
     _score_rank = []
@@ -33,7 +33,7 @@ class Game:
     _discount = 0
     _supported_languages = []
     _ccu = 0
-    _tags = defaultdict(int)
+    _tags = {}
 
     def __initHelp(self,d,key):
         return d[key] if key in d.keys() else None
@@ -64,6 +64,23 @@ class Game:
         date = self.__initHelp(data,"release_date")
         self._coming_soon = self.__initHelp(date,"coming_soon")
         self._release_date = self.__initHelp(date,"date") 
+
+        #default values for steam spy data, call addSteamSpyData after initialization
+        self._score_rank = []
+        self._positive = 0
+        self._negative = 0
+        self._userscore = 0
+        self._owners = ""
+        self._avg_play_forever = 0
+        self._avg_play_2weeks = 0
+        self._median_play_forever = 0
+        self._median_play_2weeks = 0
+        self._price = 0
+        self._initialprice = 0
+        self._discount = 0
+        self._supported_languages = []
+        self._ccu = 0
+        self._tags = defaultdict(int)
 
     def addSteamSpyData(self, spy_response):
         self._score_rank = self.__initHelp(spy_response,"score_rank")
