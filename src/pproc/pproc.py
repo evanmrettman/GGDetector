@@ -12,3 +12,11 @@ def CreateGames(json_dicts):
                 games[int(appid)] = Game(steam_response)
         log.sofar("Creating Games",i,len(json_dicts),10)
     return games
+
+def ProcessAddSteamSpy(json_dicts, games):
+    log.processing("Adding steam spy data...")
+    count = 0
+    for game in games:
+        game.addSteamSpyData(json_dicts)
+        count += 1
+        log.sofar("Adding steam spy data", count, len(json_dicts),10)
