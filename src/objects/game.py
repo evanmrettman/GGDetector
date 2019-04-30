@@ -15,8 +15,8 @@ class Game:
     _genres = [] # [id, description]
     _screenshot_count = 0
     _movie_count = 0
-    _coming_soon = defaultdict(False)
-    _release_date = defaultdict("")
+    _coming_soon = defaultdict(bool)
+    _release_date = defaultdict(lambda: 'ERROR')
     
     #15 vector components from steam spy
     _score_rank = []
@@ -33,7 +33,7 @@ class Game:
     _discount = 0
     _supported_languages = []
     _ccu = 0
-    _tags = defaultdict(0)
+    _tags = defaultdict(int)
 
     def __initHelp(self,d,key):
         return d[key] if key in d.keys() else None
