@@ -177,5 +177,7 @@ class Game:
         vector.append(self.__ccu)
         vector.append(self.__tags)
 
+        return vector
+
     def string(self):
         return "%10d : %s" % (self.__id,self.__name)
