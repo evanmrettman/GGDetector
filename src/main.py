@@ -5,6 +5,7 @@ import files.parse as parse
 import files.request as request
 import requests
 import pproc.pproc as pp
+import plots.plot as plt
 
 VERSION = 0
 F_IN = "data"
@@ -40,9 +41,11 @@ def main():
         
         log.processing("Converting JSON data to Game Objects")
         games = pp.CreateGames(apps)
-        log.info("Created %d game objects." % len(games))
-        for game in games.values():
-            log.info(game.string())
+        log.info("%d games created." % len(games))
+
+        log.processing("Making Graphs")
+        plt.createGameGraphs(F_OUT,games)
+
 
 
 if __name__ == "__main__":
