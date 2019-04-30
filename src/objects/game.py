@@ -147,9 +147,9 @@ class Game:
 
     def vectorize(self):
         vector = []
-        vector.append(self.__id)
+        #vector.append(self.__id)
         vector.append(self.__type)
-        vector.append(self.__name)
+        #vector.append(self.__name)
         vector.append(self.__required_age)
         vector.append(self.__is_free)
         vector.append(self.__developers)
@@ -159,8 +159,8 @@ class Game:
         vector.append(self.__genres)
         vector.append(self.__screenshot_count)
         vector.append(self.__movie_count)
-        vector.append(self.__coming_soon)
-        vector.append(self.__release_date)
+        #vector.append(self.__coming_soon)
+        #vector.append(self.__release_date)
         vector.append(self.__score_rank)
         vector.append(self.__positive)
         vector.append(self.__negative)
