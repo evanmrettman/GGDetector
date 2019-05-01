@@ -10,6 +10,7 @@ import plots.plot as plt
 VERSION = 0
 F_IN = "data"
 F_APPS = "%s/output/apps/" % F_IN
+F_SPY = "%s/output/steamspy/" % F_IN
 F_OUT = "output/v_%02d" % VERSION
 F_OUT_JSON = "data/output/appinfo.json"
 F_OUT_ERROR = "data/output/errorids.json"
@@ -42,6 +43,15 @@ def main():
         log.processing("Converting JSON data to Game Objects")
         games = pp.CreateGames(apps)
         log.info("%d games created." % len(games))
+
+        log.processing("Gathering SteamSpy JSON Dictionaries from files")
+        spy = parse.readDirectoryJSON(F_SPY)
+        log.info("Gathered %d steamspy data." % len(spy))
+
+        log.processing("Adding SteamSpy JSON data to Game Objects")
+        for data in spy:
+            if data["appid"] in games.keys():
+                games[data["appid"]].addSteamSpyData(data)
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
