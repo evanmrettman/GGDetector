@@ -19,7 +19,7 @@ def readDirectoryJSON(directory):
             break
         with open(directory+file, "r", encoding="utf8") as f:
             dicts.append(json.loads(f.readline()))
-        log.sofar("Reading JSON files from %s" % directory,i,len(dir_files),100)
+        log.sofar("Reading JSON files from %s" % directory,i,len(dir_files),10)
     return dicts
 
 def readJSON(filepath):
