@@ -15,8 +15,6 @@ def CreateGames(json_dicts):
 
 def ProcessAddSteamSpy(json_dicts, games):
     log.processing("Adding steam spy data...")
-    count = 0
-    for game in games:
+    for i, game in enumerate(games):
         game.addSteamSpyData(json_dicts)
-        count += 1
-        log.sofar("Adding steam spy data", count, len(json_dicts),10)
+        log.sofar("Adding steam spy data", i, len(json_dicts),10)

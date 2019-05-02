@@ -49,9 +49,7 @@ def main():
         log.info("Gathered %d steamspy data." % len(spy))
 
         log.processing("Adding SteamSpy JSON data to Game Objects")
-        for data in spy:
-            if data["appid"] in games.keys():
-                games[data["appid"]].addSteamSpyData(data)
+        pp.ProcessAddSteamSpy(spy,games)
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
