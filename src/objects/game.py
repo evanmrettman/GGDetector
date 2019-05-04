@@ -268,15 +268,16 @@ class Game:
         vector.append(self.__price) # good?
         vector.append(self.__initialprice) # good?
         vector.append(self.__discount) # good?
-        #vector.append(self.__supported_languages) # changing
 
-        #TEMPORARILY COMMENTING THIS OUT
-        #for lang in self.__supported_languages:
-        #    if lang in langs:
-        #        vector.append(1)
-        #    else:
-        #        vector.append(0)
-        #vector.append(self.__ccu) # good?
+        #vector.append(self.__supported_languages) # changing
+        if(self.__supported_languages != None):
+            for lang in self.__supported_languages:
+                if lang in langs:
+                    vector.append(1)
+                else:
+                    vector.append(0)
+        
+        vector.append(self.__ccu) # good?
 
         #vector.append(self.__tags) # changing
         for tag in self.__tags:
