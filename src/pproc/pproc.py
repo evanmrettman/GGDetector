@@ -95,7 +95,7 @@ def getLanguages(games):
         game_langs = game.get_supported_languages()
         if game_langs != None and len(game_langs) != 0:
             #log.info(game_langs)
-            for lang in game_langs.split(", "):
+            for lang in game_langs: #.split(", "):
                 if not lang in langs:
                     langs.append(lang)
 

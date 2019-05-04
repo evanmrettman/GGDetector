@@ -1,4 +1,5 @@
 from collections import defaultdict
+import utility.logging as log
 
 class Game:
 
@@ -99,7 +100,9 @@ class Game:
         self.__price = self.__initHelp(spy_response,"price", self.__price)
         self.__initialprice = self.__initHelp(spy_response,"initialprice", self.__initialprice )
         self.__discount = self.__initHelp(spy_response,"discount", self.__discount)
-        self.__supported_languages = self.__initHelp(spy_response,"languages", self.__supported_languages)
+        langstr = self.__initHelp(spy_response,"languages", self.__supported_languages)
+        if langstr != None:
+            self.__supported_languages = langstr.split(", ")
         self.__ccu = self.__initHelp(spy_response,"ccu", self.__ccu)
         self.__tags = self.__initHelp(spy_response,"tags" , self.__tags)
         
@@ -215,36 +218,37 @@ class Game:
         
 
         #vector.append(self.__developers) # changing this
-        for dev in self.__developers:
-            if dev in devs:
+        for dev in devs:
+            if dev in self.__developers:
                 vector.append(1)
+                #log.info("DEBUG: FOUND A MATCH")
             else:
                 vector.append(0)
 
         #vector.append(self.__publishers) # changing this
-        for pub in self.__publishers:
-            if pub in pubs:
+        for pub in pubs:
+            if pub in self.__publishers:
                 vector.append(1)
             else:
                 vector.append(0)
 
         # vector.append(self.__platforms) # changing this
-        for plat in self.__platforms:
-            if plat in plats:
+        for plat in plats:
+            if plat in self.__platforms:
                 vector.append(1)
             else:
                 vector.append(0)
 
         # vector.append(self.__categories) # changing this
-        for cat in self.__categories:
-            if cat in cats:
+        for cat in cats:
+            if cat in self.__categories:
                 vector.append(1)
             else:
                 vector.append(0)
 
         # vector.append(self.__genres)
-        for genre in self.__genres:
-            if genre in genres:
+        for genre in genres:
+            if genre in self.__genres:
                 vector.append(1)
             else:
                 vector.append(0)
@@ -276,6 +280,7 @@ class Game:
         if(self.__supported_languages != None):
             for lang in self.__supported_languages:
                 if lang in langs:
+                    #log.info("DEBUG: lang match found")
                     vector.append(1)
                 else:
                     vector.append(0)
@@ -283,8 +288,8 @@ class Game:
         vector.append(self.__ccu) # good?
 
         #vector.append(self.__tags) # changing
-        for tag in self.__tags:
-            if tag in tags:
+        for tag in tags:
+            if tag in self.__tags:
                 vector.append(self.__tags[tag])
             else:
                 vector.append(0)

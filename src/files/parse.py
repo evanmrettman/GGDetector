@@ -15,7 +15,7 @@ def readDirectoryJSON(directory):
     dicts = []
     dir_files = os.listdir(directory)
     for i, file in enumerate(dir_files):
-        if False and i >= 5000: # debug: only grab a sample set for now
+        if True and i >= 5000: # debug: only grab a sample set for now
             break
         with open(directory+file, "r", encoding="utf8") as f:
             dicts.append(json.loads(f.readline()))

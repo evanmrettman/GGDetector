@@ -4,7 +4,6 @@ import json
 import time
 import files.parse as parse
 import files.request as request
-import requests
 import pproc.pproc as pp
 import plots.plot as plt
 import classifier.classifier as clf
@@ -67,27 +66,27 @@ def main():
         log.info("plats")
         log.info(all_platforms)
         log.info("those were plats")
-        time.sleep(2)
+        time.sleep(1)
         log.info("cats")
         log.info(all_categories)
         log.info("those were cats")
-        time.sleep(2)
+        time.sleep(1)
         log.info("devs")
         log.info(all_developers)
         log.info("those were devs")
-        time.sleep(2)
+        time.sleep(1)
         log.info("pubs")
         log.info(all_publishers)
         log.info("those were pubs")
-        time.sleep(2)
+        time.sleep(1)
         log.info("genres")
         log.info(all_genres)
         log.info("those were genres")
-        time.sleep(2)
+        time.sleep(1)
         log.info("langs")
         log.info("those were langs")
         log.info(all_langs)
-        time.sleep(2)
+        time.sleep(1)
         log.info("tags")
         log.info(all_tags)
         log.info("those were tags")
