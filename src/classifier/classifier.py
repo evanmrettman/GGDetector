@@ -22,7 +22,8 @@ def testClassifiers(fp,games):
     data = []
     classes = []
     for game in games.values():
-        data.append(game.vectorize())
+        #data.append(game.vectorize())
+        data.append(game.get_vector())
         classes.append(game.get_class())
 
     classifiers = []

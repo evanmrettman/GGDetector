@@ -197,6 +197,8 @@ class Game:
     def get_tags(self):
         return self.__tags
 
+    def get_vector(self):
+        return self.__vector
 
     # pass a list of all possible platforms, categories, genres, languages, and tags to this function
     def vectorize(self, plats, cats, devs, pubs, genres, langs, tags):
