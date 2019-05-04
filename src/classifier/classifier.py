@@ -1,5 +1,9 @@
 import sys
 import random
+import datetime
+import utility.logging as log
+import files.parse as parse
+from collections import defaultdict
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -13,7 +17,13 @@ from sklearn.metrics import accuracy_score
 def getRandomInt():
     return random.randint(0,sys.maxsize)
 
-def testClassifiers(name,fp,data,classes):
+def testClassifiers(fp,games):
+
+    data = []
+    classes = []
+    for game in games.values():
+        data.append(game.vectorize())
+        classes.append(game.get_class())
 
     classifiers = []
     X = np.asarray(data)
@@ -62,12 +72,18 @@ def testClassifiers(name,fp,data,classes):
             state = getRandomInt()
             classifiers.append(SVC(kernel=kern,random_state=state))
 
+    now = datetime.datetime.now()
+    filename = "%s/classifier_metrics_%s.csv" % (fp,"%d-%d-%d_%d-%d.%d_%d" % (now.year,now.month,now.day,now.hour,now.minute,now.second,now.microsecond))
+
+    parse.createCSV(filename,[["Classifier Name","Accuracy Score"]])
+    dict_to_parse = defaultdict(list)
+    i = 0
     for train_indexs, test_indexs in kf.split(X):
         X_train, y_train, X_test, y_test = X[train_indexs], y[train_indexs], X[test_indexs], y[test_indexs]
-        print(len(classifiers))
-        break
         for classifier in classifiers:
-            classifier.fit(X_train,y_train)
+
+            classifier.fit(X_train,y_train) # fit it
+
             class_name = ""
             if isinstance(classifier,KNeighborsClassifier):
                 class_name = "KNN"
@@ -81,7 +97,20 @@ def testClassifiers(name,fp,data,classes):
                 class_name = "Multi-layered Neural Network"
             elif isinstance(classifier,SVC):
                 class_name = "Support Vector Machine"
-            print("%s Accuraccy: %.2f" % (class_name,accuracy_score(classifier.predict(X_test),y_test)))
+
+            class_list = dict_to_parse[class_name]
+            acc = accuracy_score(y_test,classifier.predict(X_test))
+            if len(class_list) == 0:
+                dict_to_parse[class_name] = [0,0,0]
+            class_list[0] += acc # summation of acc
+            class_list[1] += 1 # incriment count
+            class_list[2] = class_list[0] / class_list[1]
+            log.sofar("Testing Classifiers @ %s" % class_name,i,len(classifiers)*kf.get_n_splits(),100)
+
+    list_to_append = []
+    for key, value in dict_to_parse.items():
+        list_to_append.append([key,value[2]])
+    parse.appendCSV(filename,list_to_append)
 
 if __name__ == "__main__":
     number_of_items = 100

@@ -100,6 +100,9 @@ class Game:
         self.__tags = self.__initHelp(spy_response,"tags")
         
 
+    def get_class(self): # TODO: make this more clear. temporary for now
+        return self.__positive > self.__negative if self.__positive != None and self.__negative != None else False
+
     def get_id(self):
         return self.__id
 

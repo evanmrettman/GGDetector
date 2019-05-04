@@ -6,6 +6,7 @@ import files.request as request
 import requests
 import pproc.pproc as pp
 import plots.plot as plt
+import classifier.classifier as clf
 
 VERSION = 0
 F_IN = "data"
@@ -53,6 +54,9 @@ def main():
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
+
+        log.processing("Testing Classifiers")
+        clf.testClassifiers(F_OUT,games)
 
 
 
