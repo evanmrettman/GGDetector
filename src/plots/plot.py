@@ -5,7 +5,22 @@ from collections import Counter
 import matplotlib.ticker as mticker
 from matplotlib.ticker import FuncFormatter
 
+green = '#42f471'
+red = '#f44141'
+
+def createClassifierGraph(fp,classifier_dict):
+
+    global green
+    global red
+
+    classifier_names = list(classifier_dict.keys())
+    classifier_values = list(classifier_dict.values())
+    plotHistogram("Classifier Accuracies","Classifier Names",classifier_dict,fp,red,green)
+
 def createGameGraphs(fp,games_dict):
+
+    global green
+    global red
 
     types = defaultdict(int)
     ages = defaultdict(int)
@@ -59,8 +74,6 @@ def createGameGraphs(fp,games_dict):
         else: 
             release["No Release Info"] += 1
 
-    green = '#42f471'
-    red = '#f44141'
 
     #plotHistogram("App Types","Percent","App Count",types,fp)
     plotHistogram("Ages","What is the age requirement for games with age limits?",ages,fp,red,green)
