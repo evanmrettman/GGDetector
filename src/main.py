@@ -6,6 +6,7 @@ import files.request as request
 import requests
 import pproc.pproc as pp
 import plots.plot as plt
+from collections import defaultdict
 
 VERSION = 0
 F_IN = "data"
@@ -52,6 +53,46 @@ def main():
         for data in spy:
             if data["appid"] in games.keys():
                 games[data["appid"]].addSteamSpyData(data)
+
+        log.processing("Creating list of keys for components in vectorization")
+        all_platforms = pp.getPlatforms(games)
+        all_categories = pp.getCategories(games)
+        all_developers = pp.getDevelopers(games)
+        all_publishers = pp.getPublishers(games)
+        all_genres = pp.getGenres(games)
+        all_langs = pp.getLanguages(games)
+        all_tags = pp.getTags(games)
+
+        log.processing("Vectorizing games")
+        #log.info("DEBUG")
+        #log.info(games)
+        count = 0
+        for game in games.values():
+            count += 1
+            log.info("DEBUG")
+            log.info(game.string())
+            #for lang in game.get_supported_languages():
+            #    log.info(lang)
+            game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
+            log.sofar("vectorizing games", count, len(games), 100)
+
+        # I want to see how many tags there are
+        #tags = defaultdict(int)
+        #for game in games.values():
+        #    if len(game.get_tags()) != 0:
+        #        for key, value in game.get_tags().items():
+        #            tags[key] += value
+
+
+        
+        #log.info("PRINTING TAGS WITH OVER 1000 USES")
+        #for tag, value in tags.items():
+        #    if(value > 1000):
+        #        log.info("%s:%d" % (tag,value))
+        
+        # vectorize games
+        # first retrieve list of all possible platforms, categories, genres, languages, and tags for vectorization
+
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
