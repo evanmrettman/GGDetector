@@ -61,6 +61,7 @@ def main():
         all_genres = pp.getGenres(games)
         all_langs = pp.getLanguages(games)
         all_tags = pp.getTags(games)
+        log.info("%d vector data entries created." % (len(all_platforms)+len(all_categories)+len(all_developers)+len(all_publishers)+len(all_genres)+len(all_langs)+len(all_tags)))
 
         if False:
             log.info("plats")
@@ -95,7 +96,7 @@ def main():
         vectors = []
         for i, game in enumerate(games.values()):
             vectors.append(game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags))
-            log.sofar("vectorizing games", i, len(games), 4)
+            log.sofar("Vectorizing Games", i, len(games), 4)
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
