@@ -1,6 +1,6 @@
 from collections import defaultdict
 from objects.game import Game
-from utility.logging import logging
+import utility.logging as log
 
 class Games:
 
