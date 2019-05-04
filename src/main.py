@@ -62,68 +62,40 @@ def main():
         all_langs = pp.getLanguages(games)
         all_tags = pp.getTags(games)
 
-        #debug
-        log.info("plats")
-        log.info(all_platforms)
-        log.info("those were plats")
-        time.sleep(1)
-        log.info("cats")
-        log.info(all_categories)
-        log.info("those were cats")
-        time.sleep(1)
-        log.info("devs")
-        log.info(all_developers)
-        log.info("those were devs")
-        time.sleep(1)
-        log.info("pubs")
-        log.info(all_publishers)
-        log.info("those were pubs")
-        time.sleep(1)
-        log.info("genres")
-        log.info(all_genres)
-        log.info("those were genres")
-        time.sleep(1)
-        log.info("langs")
-        log.info("those were langs")
-        log.info(all_langs)
-        time.sleep(1)
-        log.info("tags")
-        log.info(all_tags)
-        log.info("those were tags")
+        if False:
+            log.info("plats")
+            log.info(all_platforms)
+            log.info("those were plats")
+            time.sleep(1)
+            log.info("cats")
+            log.info(all_categories)
+            log.info("those were cats")
+            time.sleep(1)
+            log.info("devs")
+            log.info(all_developers)
+            log.info("those were devs")
+            time.sleep(1)
+            log.info("pubs")
+            log.info(all_publishers)
+            log.info("those were pubs")
+            time.sleep(1)
+            log.info("genres")
+            log.info(all_genres)
+            log.info("those were genres")
+            time.sleep(1)
+            log.info("langs")
+            log.info("those were langs")
+            log.info(all_langs)
+            time.sleep(1)
+            log.info("tags")
+            log.info(all_tags)
+            log.info("those were tags")
 
         log.processing("Vectorizing games")
         vectors = []
-        #log.info("DEBUG")
-        #log.info(games)
-        count = 0
-        for game in games.values():
-            count += 1
-            #log.info("DEBUG")
-            #log.info(game.string())
-            #for lang in game.get_supported_languages():
-            #    log.info(lang)
+        for i, game in enumerate(games.values()):
             vectors.append(game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags))
-            log.sofar("vectorizing games", count, len(games), 100)
-
-        log.info(vectors[5])
-
-        # I want to see how many tags there are
-        #tags = defaultdict(int)
-        #for game in games.values():
-        #    if len(game.get_tags()) != 0:
-        #        for key, value in game.get_tags().items():
-        #            tags[key] += value
-
-
-        
-        #log.info("PRINTING TAGS WITH OVER 1000 USES")
-        #for tag, value in tags.items():
-        #    if(value > 1000):
-        #        log.info("%s:%d" % (tag,value))
-        
-        # vectorize games
-        # first retrieve list of all possible platforms, categories, genres, languages, and tags for vectorization
-
+            log.sofar("vectorizing games", i, len(games), 4)
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
