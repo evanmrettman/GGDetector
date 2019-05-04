@@ -107,8 +107,8 @@ class Game:
         self.__tags = self.__initHelp(spy_response,"tags" , self.__tags)
         
 
-    def get_class(self): # TODO: make this more clear. temporary for now
-        return self.__positive > self.__negative if self.__positive != None and self.__negative != None else False
+    #def get_class(self): # TODO: make this more clear. temporary for now
+    #    return self.__positive > self.__negative if self.__positive != None and self.__negative != None else False
 
     def get_id(self):
         return self.__id
@@ -199,6 +199,21 @@ class Game:
 
     def get_vector(self):
         return self.__vector
+
+    def get_class(self):
+        #class is calculated and returned here
+        #class uses positive, negative, (and later maybe ccu)
+        sum_ratings = self.__positive + self.__negative
+        if sum_ratings > 0:
+            pos_ratio = self.__positive / (sum_ratings)
+        else:
+            pos_ratio = 0
+
+        if pos_ratio >= .8:
+            return 1
+        else:
+            return 0
+
 
     # pass a list of all possible platforms, categories, genres, languages, and tags to this function
     def vectorize(self, plats, cats, devs, pubs, genres, langs, tags):

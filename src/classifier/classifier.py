@@ -30,6 +30,10 @@ def testClassifiers(fp,games):
     X = np.asarray(data)
     y = np.asarray(classes)
 
+    log.info("DEBUG") #debug
+    log.info(X)
+    log.info(y)
+
     # Create KFolds
     kf = KFold(n_splits=2)
 
