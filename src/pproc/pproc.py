@@ -59,24 +59,31 @@ def getPublishers(games):
 def getCategories(games):
     #TEST THIS?
     categories = []
+    val = None
     for game in games.values():
         game_categories = game.get_categories()
         if game_categories != None and len(game_categories) != 0:
             for category in game_categories:
-                if not category in categories:
-                    categories.append(category)
+                #log.info(category)
+                val = category["description"]
+                if not val in categories:
+                    categories.append(val)
 
     return categories
 
 def getGenres(games):
     #TEST THIS?
     genres = []
+    val = None
     for game in games.values():
         game_genres = game.get_genres()
         if game_genres != None and len(game_genres) != 0:
             for genre in game_genres:
-                if not genre in genres:
-                    genres.append(genre)
+                #log.info(genre)
+                #log.info(genre["description"])
+                val = genre["description"]
+                if not val in genres:
+                    genres.append(val)
 
     return genres
 
@@ -86,7 +93,8 @@ def getLanguages(games):
     for game in games.values():
         game_langs = game.get_supported_languages()
         if game_langs != None and len(game_langs) != 0:
-            for lang in game_langs:
+            log.info(game_langs)
+            for lang in game_langs.split(", "):
                 if not lang in langs:
                     langs.append(lang)
 

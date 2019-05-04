@@ -1,6 +1,7 @@
 #import antigravity
 import utility.logging as log
 import json
+import time
 import files.parse as parse
 import files.request as request
 import requests
@@ -63,18 +64,50 @@ def main():
         all_langs = pp.getLanguages(games)
         all_tags = pp.getTags(games)
 
+        #debug
+        log.info("plats")
+        log.info(all_platforms)
+        log.info("those were plats")
+        time.sleep(2)
+        log.info("cats")
+        log.info(all_categories)
+        log.info("those were cats")
+        time.sleep(2)
+        log.info("devs")
+        log.info(all_developers)
+        log.info("those were devs")
+        time.sleep(2)
+        log.info("pubs")
+        log.info(all_publishers)
+        log.info("those were pubs")
+        time.sleep(2)
+        log.info("genres")
+        log.info(all_genres)
+        log.info("those were genres")
+        time.sleep(2)
+        log.info("langs")
+        log.info("those were langs")
+        log.info(all_langs)
+        time.sleep(2)
+        log.info("tags")
+        log.info(all_tags)
+        log.info("those were tags")
+
         log.processing("Vectorizing games")
+        vectors = []
         #log.info("DEBUG")
         #log.info(games)
         count = 0
         for game in games.values():
             count += 1
-            log.info("DEBUG")
-            log.info(game.string())
+            #log.info("DEBUG")
+            #log.info(game.string())
             #for lang in game.get_supported_languages():
             #    log.info(lang)
-            game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
+            vectors.append(game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags))
             log.sofar("vectorizing games", count, len(games), 100)
+
+        log.info(vectors[5])
 
         # I want to see how many tags there are
         #tags = defaultdict(int)
