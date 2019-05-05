@@ -18,7 +18,7 @@ from sklearn.model_selection import train_test_split
 def getRandomInt():
     return random.randint(0,sys.maxsize)
 
-def testClassifiers(fp,games):
+def testClassifiers(fp,games,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True):
 
     fullpath = "%s/classifier_test.csv" % fp
     kf = KFold(n_splits=10)
@@ -41,14 +41,6 @@ def testClassifiers(fp,games):
     random_range = range(0,1)
     tree_depth = [10,20,30,40,50,60,70,80,90,100,None]
     rforest_estimators = range(10,100,10)
-
-    TestKNN = True
-    TestDTree = True
-    TestRForest = True
-    TestNBayes = True
-    TestNNetwork = True
-    TestSVM = True
-
     dict_to_parse = defaultdict(list)
     acc_data = []
 
@@ -111,14 +103,14 @@ def testClassifiers(fp,games):
         log.info("\tFinished NNetworks")
     if TestSVM:
         log.info("\tTesting SVMs")
-        for kern in ["rbf","linear","poly","sigmoid","precomputed"]:
+        for kern in ["rbf","poly","sigmoid"]: # linear was real slow
             for _ in random_range:
                 random_state = getRandomInt()
                 c = SVC(gamma="scale",kernel=kern,random_state=random_state)
                 c.fit(X_train,y_train)
                 acc = accuracy_score(y_test,c.predict(X_test))
                 log.info("\t\tAccuraccy %f with %s" % (acc,kern))
-                parse.appendCSV(fullpath,[["SVM",acc,active,solve,random_state]])
+                parse.appendCSV(fullpath,[["SVM",acc,kern,random_state]])
         log.info("\tFinished SVMs")
 
 if __name__ == "__main__":

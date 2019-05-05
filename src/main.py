@@ -102,7 +102,7 @@ def main():
         plt.createGameGraphs(F_OUT,games)
 
         log.processing("Testing Classifiers")
-        clf.testClassifiers(F_OUT,games)
+        clf.testClassifiers(F_OUT,games)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
 
 
 
