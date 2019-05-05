@@ -44,7 +44,49 @@ class Game:
         # x = lambda key, default_value : __initHelp(d,index,default_value)
 
     # given a dictionary of a sucessful json request and it is a game, parse it as game object
-    def __init__(self, steam_response):
+    def __init__(self, steam_response, fromJSON = False):
+        
+        if(fromJSON):
+            data = steam_response
+            #steam_response should already be formatted as a dict to copy all object values by id
+            self.__id = self.__initHelp(data,"id", self.__id)
+            self.__type = self.__initHelp(data,"type", self.__type)
+            self.__name = self.__initHelp(data,"name", self.__name)
+            self.__required_age = self.__initHelp(data,"required_age", self.__required_age)
+            self.__is_free = self.__initHelp(data,"is_free", self.__is_free)
+            self.__developers = self.__initHelp(data,"developers", self.__developers)
+            self.__publishers = self.__initHelp(data,"publishers", self.__publishers)
+            self.__platforms = self.__initHelp(data,"platforms", self.__platforms) # windows, mac, linux
+            self.__categories = self.__initHelp(data,"categories", self.__categories) # [id, descriptions]
+            self.__genres = self.__initHelp(data,"genres", self.__genres) # [id, description]
+            self.__screenshot_count = self.__initHelp(data,"screenshot_count", self.__screenshot_count)
+            self.__movie_count = self.__initHelp(data,"movie_count", self.__movie_count)
+            #date = self.__initHelp(data,"release_date", defaultdict(str)) # not sure about this line
+            self.__coming_soon = self.__initHelp(data,"coming_soon", self.__coming_soon)
+            self.__release_date = self.__initHelp(data,"date", self.__release_date) 
+            self.__score_rank = self.__initHelp(data,"score_rank", self.__score_rank)
+            self.__positive = self.__initHelp(data,"positive", self.__positive)
+            self.__negative = self.__initHelp(data,"negative", self.__negative)
+            self.__userscore = self.__initHelp(data,"userscore", self.__userscore)
+            self.__owners = self.__initHelp(data,"owners", self.__owners)
+            self.__avg_play_forever = self.__initHelp(data,"average_forever", self.__avg_play_forever)
+            self.__avg_play_2weeks = self.__initHelp(data,"average_2weeks", self.__avg_play_2weeks)
+            self.__median_play_forever = self.__initHelp(data,"median_forever", self.__median_play_forever)
+            self.__median_play_2weeks = self.__initHelp(data,"median_2weeks", self.__median_play_2weeks)
+            self.__price = self.__initHelp(data,"price", self.__price)
+            #self.__price = int(self.__price) if self.__price != None else 0
+            self.__initialprice = self.__initHelp(data,"initialprice", self.__initialprice )
+            #self.__initialprice = int(self.__initialprice) if self.__initialprice != None else 0
+            self.__discount = self.__initHelp(data,"discount", self.__discount)
+            #self.__discount= int(self.__discount) if self.__discount != None else 0
+            langstr = self.__initHelp(data,"languages", self.__supported_languages)
+            if langstr != None and len(langstr) > 0:
+                    self.__supported_languages = langstr.split(", ")
+            self.__ccu = self.__initHelp(data,"ccu", self.__ccu)
+            self.__tags = self.__initHelp(data,"tags" , self.__tags)
+            return
+
+        # Default initialization happens here
 
         data = steam_response[list(steam_response.keys())[0]]["data"]
 

@@ -26,13 +26,13 @@ def readJSON(filepath):
     with open(filepath, "r", encoding="utf8") as f:
         loaded_json = json.loads(f.read())
 
-    count = 0
-    for x in loaded_json["applist"]["apps"]["app"]:
-        print("")
-        print(x["appid"])
-        print(x["name"])
-        count = count + 1
-    print(count)
+    #count = 0
+    #for x in loaded_json["applist"]["apps"]["app"]:
+    #    print("")
+    #    print(x["appid"])
+    #    print(x["name"])
+    #    count = count + 1
+    #print(count)
 
     return loaded_json
 
