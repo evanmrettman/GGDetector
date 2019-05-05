@@ -17,7 +17,7 @@ class Games:
     __vectors = []
     __classes = []
 
-    def __createGameDict(self,steam_dict,spy_dict):
+    def __createGameDict(self,steam_dict,spy_dict,pos_ratio):
         games = defaultdict(Game)
         for i, steam_response in enumerate(steam_dict):
             appid = list(steam_response.keys())[0]

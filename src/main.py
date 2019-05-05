@@ -8,8 +8,9 @@ import pproc.pproc as pp
 import plots.plot as plt
 import classifier.classifier as clf
 from collections import defaultdict
+import sys
 
-VERSION = 3
+VERSION = 4
 F_IN = "data"
 F_APPS = "%s/output/apps/" % F_IN
 F_SPY = "%s/output/steamspy/" % F_IN
@@ -23,10 +24,29 @@ F_IN_LIST = "list_4_26_19.json"
 
 def main():
 
+    pos_ratio = 0.5
+    if len(sys.argv) >= 2:
+        try:
+            try: # check if it is a float
+                float(sys.argv[1])
+            except ValueError:
+                raise Exception("Command line argument for classifier ratio is not a numerical value.")
+            pos_ratio = float(sys.argv[1])
+            if pos_ratio < 0 or pos_ratio > 1: # check if its a valid range
+                raise Exception("Command line argument for classifier ratio is not within [0,1] range.")
+        except Exception as e:
+            log.info(e) # we raised an error, print it for understanding
+            return # leave because we failed with the command line argument
+
+    log.info("Running program with positive ratio classifier limit of %3.2f%%." % (pos_ratio*100))
+
+    limit_input = False
+    limit_value = 1000
     GetTestingData = False
     SteamAPI = False
     SteamSpy = False
     TestInput = True
+    TestClassifiers = False
     NumberOfTestInputs = 2
 
     if GetTestingData:
@@ -41,15 +61,13 @@ def main():
             log.processing("Requesting AppIds from Steam Spy")
             request.requestEachAppToJSON_SteamAPI(applist)
     else:
-        limit_input = True
-        limit_value = 1000
 
         log.processing("Gathering JSON Dictionaries from Files")
         apps = parse.readDirectoryJSON(F_APPS,lim=limit_input,lim_value=limit_value)
         log.info("Gathered %d app data." % len(apps))
         
         log.processing("Converting JSON data to Game Objects")
-        games = pp.CreateGames(apps)
+        games = pp.CreateGames(apps,pos_ratio)
         log.info("%d games created." % len(games))
 
         log.processing("Gathering SteamSpy JSON Dictionaries from files")
@@ -82,36 +100,6 @@ def main():
         log.info("%d vector data entries created." % 
         (len(all_platforms)+len(all_categories)+len(all_developers)+len(all_publishers)+len(all_genres)+len(all_langs)+len(all_tags)))
 
-        if False:
-            log.info("plats")
-            log.info(all_platforms)
-            log.info("those were plats")
-            time.sleep(1)
-            log.info("cats")
-            log.info(all_categories)
-            log.info("those were cats")
-            time.sleep(1)
-            log.info("devs")
-            log.info(all_developers)
-            log.info("those were devs")
-            time.sleep(1)
-            log.info("pubs")
-            log.info(all_publishers)
-            log.info("those were pubs")
-            time.sleep(1)
-            log.info("genres")
-            log.info(all_genres)
-            log.info("those were genres")
-            time.sleep(1)
-            log.info("langs")
-            log.info("those were langs")
-            log.info(all_langs)
-            time.sleep(1)
-            log.info("tags")
-            log.info(all_tags)
-            log.info("those were tags")
-
-
         log.processing("Vectorizing games")
         vectors = []
         for i, game in enumerate(games.values()):
@@ -135,24 +123,22 @@ def main():
                 test_vector = test_game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
                 test_games.append(test_game)
                 test_vectors.append(test_vector)
-
-        if True: #Test to make sure test input is correct
-            log.info("Here's the test vectors:")
-            for x in test_vectors:
-                log.info(x)
-            log.info("Here's a training vector for reference:")
-            log.info(vectors[5])
-            time.sleep(5) # pausing for a moment to let you read
+            if False: #Test to make sure test input is correct
+                log.info("Here's the test vectors:")
+                for x in test_vectors:
+                    log.info(x)
+                log.info("Here's a training vector for reference:")
+                log.info(vectors[5])
+                time.sleep(5) # pausing for a moment to let you read
 
 
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
 
-        log.processing("Testing Classifiers")
-        clf.testClassifiers(F_OUT,games,sampleperc=0.7,show=False)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
-        
-
+        if TestClassifiers:
+            log.processing("Testing Classifiers")
+            clf.testClassifiers(F_OUT,games,sampleperc=0.7,show=False)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
 
 if __name__ == "__main__":
     log.starting()

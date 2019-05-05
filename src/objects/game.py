@@ -36,6 +36,8 @@ class Game:
     __ccu = 0
     __tags = {}
 
+    __pos_ratio = 0
+
     __vector = []
 
     def __initHelp(self,d,key,default_value):
@@ -44,8 +46,10 @@ class Game:
         # x = lambda key, default_value : __initHelp(d,index,default_value)
 
     # given a dictionary of a sucessful json request and it is a game, parse it as game object
-    def __init__(self, steam_response, fromJSON = False):
+    def __init__(self, steam_response, pos_ratio, fromJSON = False):
         
+        self.__pos_ratio = pos_ratio
+
         if(fromJSON):
             data = steam_response
             #steam_response should already be formatted as a dict to copy all object values by id
@@ -257,7 +261,7 @@ class Game:
         else:
             pos_ratio = 0
 
-        if pos_ratio >= .70:
+        if pos_ratio >= self.__pos_ratio:
             return 1
         else:
             return 0
