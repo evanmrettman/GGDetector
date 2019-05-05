@@ -38,7 +38,7 @@ def main():
             log.processing("Requesting AppIds from Steam Spy")
             request.requestEachAppToJSON_SteamAPI(applist)
     else:
-        limit_input = False
+        limit_input = True
         limit_value = 5000
 
         log.processing("Gathering JSON Dictionaries from Files")
@@ -56,12 +56,17 @@ def main():
         log.processing("Adding SteamSpy JSON data to Game Objects")
         pp.ProcessAddSteamSpy(spy,games)
 
-        # Remove old games from the list
+        # Remove old and irrelevant games from the list
         old_len = len(games)
         yearlimit = 2018
+        review_min = 100
         log.processing("Removing games that are older than the year %d." % yearlimit)
         games = pp.getRecentGames(games, yearlimit)
         log.info("Removed %d games from list of %d. %d games are left." % (old_len-len(games),old_len,len(games)))
+        log.processing("Removing games that have less than than %d reviews." % review_min)
+        games = pp.getRelevantGames(games, review_min)
+        log.info("Removed %d games from list of %d. %d games are left." % (old_len-len(games),old_len,len(games)))
+        
 
         log.processing("Creating list of keys for components in vectorization")
         all_platforms = pp.getPlatforms(games)

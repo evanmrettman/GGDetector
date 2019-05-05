@@ -203,6 +203,9 @@ class Game:
     def get_vector(self):
         return self.__vector
 
+    def get_reviews(self):
+        return (self.__positive + self.__negative)
+
     def get_class(self):
         #class is calculated and returned here
         #class uses positive, negative, (and later maybe ccu)
