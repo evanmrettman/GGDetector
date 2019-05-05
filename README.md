@@ -1,7 +1,5 @@
 # GG Detector
 
-Trello: https://trello.com/b/P2SWP7MI/gg-detector
-
 Steam API:
 ```
 API Documentation (Unofficial): https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI
