@@ -1,6 +1,8 @@
-from objects.game import Game
 import utility.logging as log
+import random
 from collections import defaultdict
+from objects.game import Game
+import math
 
 def CreateGames(json_dicts,pos_ratio):
     games = defaultdict(Game)
@@ -23,6 +25,105 @@ def ProcessAddSteamSpy(json_dicts, games):
     for i, game in enumerate(games.values()):
         game.addSteamSpyData(spy_dict_index[game.get_id()])
         log.sofar("Adding steam spy data", i, len(games),4)
+
+def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None):
+    random.seed(seed)
+    if seed == None:
+        seed = random.randint(0,100000)
+    random.seed(seed)
+    randJSON = {"name": ("game-%d" % seed)}
+    randJSON["id"] = seed
+    randJSON["type"] = "game"
+
+    randJSON["required_age"] = 0
+    if (random.randint(0,1)):
+        randJSON["required_age"] = random.randint(10,18)
+
+    randJSON["is_free"] = True
+    if (random.randint(0,1)):
+        randJSON["is_free"] = False
+    
+    randJSON["developers"] = "Ryan and Evan"
+    if (len(devs) and random.randint(0,2)):
+        rand = random.randint(0,len(devs)-1)
+        randJSON["developers"] = devs[rand]
+    
+    randJSON["publishers"] = "Ryan and Evan"
+    if (len(pubs) and random.randint(0,2)):
+        rand = random.randint(0,len(pubs)-1)
+        randJSON["publishers"] = pubs[rand]
+
+    rand1 = False
+    rand2 = False
+    rand3 = False
+    if (random.randint(0,1)):
+        rand1 = True
+    if (random.randint(0,1)):
+        rand2 = True
+    if (random.randint(0,1)):
+        rand3 = True
+
+    randJSON["platforms"] = {"windows": rand1, "mac": rand2, "linux": rand3}
+    
+    temp_cats = []
+    if len(cats):
+        for x in range(0, random.randint(1,len(cats))):
+            temp_cats.append({"id": x, "description": cats[random.randint(0,len(cats)-1)]})
+    randJSON["cats"] = temp_cats
+
+    temp_genres = []
+    if len(genres):
+        for x in range(0, random.randint(1,len(genres))):
+            temp_genres.append({"id": x, "description": cats[random.randint(0,len(genres)-1)]})
+    randJSON["genres"] = temp_genres
+
+    randJSON["screenshot_count"] = random.randint(0,10)
+
+    randJSON["movie_count"] = random.randint(0,5)
+
+    randJSON["coming_soon"] = False
+    
+    randJSON["release_date"] = "May 4, 2019"
+
+    randJSON["score_rank"] = []
+
+    # The reviews don't really matter since this is random
+    randJSON["positive"] = random.randint(0,100) * random.randint(0,100)
+    randJSON["negative"] = random.randint(0,100) * random.randint(0,100)
+    randJSON["userscore"] = 0
+    randJSON["owners"] = "20,000,000 .. 50,000,000"
+    if (random.randint(0,1)):
+        randJSON["owners"] = "20,000,000 .. 50,000,000"
+    if (random.randint(0,2)):
+        randJSON["owners"] = "0 .. 20,000,000"
+
+    rand = random.randint(0,2000)
+    randJSON["avg_play_forever"] = rand + random.randint(0,100)
+    randJSON["avg_play_2weeks"] = rand + random.randint(0,100)
+    randJSON["median_play_forever"] = rand + random.randint(0,100)
+    randJSON["median_play_2weeks"] = rand + random.randint(0,100)
+
+    randJSON["price"] = 0
+    randJSON["initialprice"] = 0
+    if(not randJSON["is_free"]):
+        rand = (random.randint(0,80)*100)-1
+        randJSON["price"] = rand
+        randJSON["initialprice"] = rand + (random.randint(0,50)*5)
+
+    randJSON["discount"] = randJSON["initialprice"] + randJSON["price"]
+
+    randJSON["supported_languages"] = langs[random.randint(0,len(langs)-1)]
+
+    randJSON["ccu"] = math.floor(math.log10(random.randint(0,10000))) * random.randint(0,1000) + random.randint(0,100)
+
+    #print( tags[random.randint(0,len(tags)-1)] )
+    randJSON["tags"]= {}
+    if len(tags):
+        for x in range(0, random.randint(0,20)):
+            randJSON["tags"][tags[random.randint(0,len(tags)-1)]] = random.randint(0,1000)
+
+    return randJSON
+
 
 
 #retrieve list of all possible platforms, categories, genres, languages, and tags for vectorization
