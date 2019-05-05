@@ -168,6 +168,7 @@ def plotHistogram(name,xlabel,d,fp,c_min,c_max):
     plt.xticks(rotation=45)
 
     if len(d) > limit/2:
+        plt.xticks(rotation=90)
         if len(d) > limit:
             shortPhrase = " (Limited to %d Catagories)" % limit
             dcopy = dict(Counter(dcopy).most_common(limit))    
