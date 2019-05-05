@@ -126,12 +126,12 @@ def getRecentGames(games, cutoff_year):
 
 def getRelevantGames(games, review_min):
     old_games = []
-    for game in games.values():
-        if (game.get_reviews() >= review_min):
-            old_games.append(game.get_id())
+    for key, game in games.items():
+        if (game.get_reviews() < review_min):
+            old_games.append(key)
 
     # construct recent game
-    for game in old_games:
-        games.pop(game)
+    for key in old_games:
+        games.pop(key)
     return games
 

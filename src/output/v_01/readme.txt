@@ -1,0 +1,1 @@
+This version uses a class determined where if the positive ratio is > 0.5 it is positive, otherwise its negative.

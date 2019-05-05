@@ -215,7 +215,7 @@ class Game:
         else:
             pos_ratio = 0
 
-        if pos_ratio >= .8:
+        if pos_ratio >= .50:
             return 1
         else:
             return 0

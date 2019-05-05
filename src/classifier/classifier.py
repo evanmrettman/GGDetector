@@ -39,19 +39,20 @@ def testClassifiers(fp,games,sampleperc=0.1,TestKNN=True,TestDTree=True,TestRFor
     log.info("\tUsing sample size from testing data of %dx%d (%d)." % (len(game_data),len(game_data[0]),len(game_data)*len(game_data[0])))
 
     scaler = MinMaxScaler(feature_range=[0,1])
-    vector_np = scaler.fit_transform(np.asarray(game_data).astype(np.float64)[0:,0:])
     features_before = len(game_data[0])
-    features_after = 500 #features_after if features_after > len(vectors) else len(vectors)-10
+    features_after = 140 if 140 > features_before else features_before
     rows_prv = len(game_data) # rows previously existing in the vector
     rows_fed = min(1000,len(game_data)) # rows to feed it at a time
+    X_pca = None
 
-    pca = IncrementalPCA(n_components=features_after,batch_size=16)
-    for i in range(0,math.floor(rows_prv/rows_fed)): # perform partial fit
-        lower = i*rows_fed
-        upper = (i+1)*rows_fed
-        pca.partial_fit(vector_np[lower:upper])
-
-    X_pca = pca.transform(vector_np)
+    if True: # make vector_np out of scope
+        vector_np = scaler.fit_transform(np.asarray(game_data).astype(np.float64)[0:,0:])
+        pca = IncrementalPCA(n_components=features_after,batch_size=16)
+        for i in range(0,math.floor(rows_prv/rows_fed)): # perform partial fit
+            lower = i*rows_fed
+            upper = (i+1)*rows_fed
+            pca.partial_fit(vector_np[lower:upper])
+        X_pca = pca.transform(vector_np)
 
     plt.close('all')
     plt.figure()
@@ -71,7 +72,7 @@ def testClassifiers(fp,games,sampleperc=0.1,TestKNN=True,TestDTree=True,TestRFor
     log.info("Testing Class Data: %d" % (y_test.shape[0]))
 
     knn_ks = range(1,21,4)
-    random_range = range(0,1)
+    random_range = range(0,20)
     tree_depth = [10,20,30,40,50,60,70,80,90,100,None]
     rforest_estimators = range(10,100,10)
     dict_to_parse = defaultdict(list)

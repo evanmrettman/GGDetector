@@ -9,7 +9,7 @@ import plots.plot as plt
 import classifier.classifier as clf
 from collections import defaultdict
 
-VERSION = 0
+VERSION = 1
 F_IN = "data"
 F_APPS = "%s/output/apps/" % F_IN
 F_SPY = "%s/output/steamspy/" % F_IN
@@ -38,7 +38,7 @@ def main():
             log.processing("Requesting AppIds from Steam Spy")
             request.requestEachAppToJSON_SteamAPI(applist)
     else:
-        limit_input = True
+        limit_input = False
         limit_value = 5000
 
         log.processing("Gathering JSON Dictionaries from Files")
@@ -59,7 +59,7 @@ def main():
         # Remove old and irrelevant games from the list
         old_len = len(games)
         yearlimit = 2018
-        review_min = 100
+        review_min = 200
         log.processing("Removing games that are older than the year %d." % yearlimit)
         games = pp.getRecentGames(games, yearlimit)
         log.info("Removed %d games from list of %d. %d games are left." % (old_len-len(games),old_len,len(games)))
@@ -115,19 +115,19 @@ def main():
             vectors.append(game.vectorize(
                 all_platforms,
                 all_categories,
-                [],#all_developers,
-                [],#all_publishers,
+                all_developers,
+                all_publishers,
                 all_genres,
                 all_langs,
-                [],#all_tags
+                all_tags
                 ))
             log.sofar("Vectorizing Games", i, len(games), 10)
 
         log.processing("Making Graphs")
-        #plt.createGameGraphs(F_OUT,games)
+        plt.createGameGraphs(F_OUT,games)
 
         log.processing("Testing Classifiers")
-        clf.testClassifiers(F_OUT,games,sampleperc=0.1,show=True)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
+        clf.testClassifiers(F_OUT,games,sampleperc=0.7,show=False)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
         
 
 
