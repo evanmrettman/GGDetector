@@ -46,10 +46,11 @@ def main():
     SteamAPI = False
     SteamSpy = False
     TestInput = True
+    MakeGraphs = False
     TestClassifiers = False
     NumberOfTestInputs = 2
     GenerateGames = True
-    NumberOfGenerated = 100
+    NumberOfGenerated = 1000
 
     if GetTestingData:
         log.processing("Gathering Application List")
@@ -118,46 +119,32 @@ def main():
 
         # Load input here
         test_games = []
-        test_vectors = []
         if TestInput:
             log.info("Loading input games...")
             for x in range(NumberOfTestInputs):
                 test_game = pp.inputGame(parse.readJSON("%sinput%d.json" % (F_TEST_INPUT, x)))
                 test_vector = test_game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
                 test_games.append(test_game)
-                test_vectors.append(test_vector)
-            if False: #Test to make sure test input is correct
-                log.info("Here's the test vectors:")
-                for x in test_vectors:
-                    log.info(x)
-                log.info("Here's a training vector for reference:")
-                log.info(vectors[5])
-                time.sleep(5) # pausing for a moment to let you read
         
         # Generate test games here
         if GenerateGames:
             log.info("Generating random test games...")
             for x in range(NumberOfGenerated):
                 test_game = pp.inputGame(pp.generateRandomGame(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags))
-                test_vector = test_game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
+                test_game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
                 test_games.append(test_game)
-                test_vectors.append(test_vector)
-            if True:
-                log.info("Here's the test vectors:")
-                for x in test_vectors:
-                    log.info(x)
-            time.sleep(5) # pausing for a moment to let you read
 
-
-        log.processing("Making Graphs")
-        plt.createGameGraphs(F_OUT,games)
+        if MakeGraphs:
+            log.processing("Making Graphs")
+            plt.createGameGraphs(F_OUT,games)
 
         if TestClassifiers:
             log.processing("Testing Classifiers")
             clf.testClassifiers(F_OUT,games,pos_ratio,sampleperc=0.7,show=False)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
 
-        log.processing("Creating Classifier Data Graphs")
-        plt.createClassifierGraphs(F_OUT,"%s/classifier_data/" % F_OUT)
+        if MakeGraphs:
+            log.processing("Creating Classifier Data Graphs")
+            plt.createClassifierGraphs(F_OUT,"%s/classifier_data/" % F_OUT)
 
         log.processing("Classifying Test Games")
         clf.predict(F_OUT,games,test_games)

@@ -24,45 +24,52 @@ def getRandomInt():
 
 def predict(fp,games,games_test,sampleperc=1):
     
-    game_data = []
-    game_classes = []
-
-    for i, game in enumerate(games.values()):
-        if i >= len(games)*sampleperc:
-            break
-        game_data.append(game.get_vector())
-        game_classes.append(game.get_class())
-
-    for i, game in enumerate(games_test):
-        game_data.append(game.get_vector())
-
+    predict_list = []#[["Game Name","Popular?"]]
     scaler = MinMaxScaler(feature_range=[0,1])
-    features_before = len(game_data[0])
     features_after = 140
-    rows_prv = len(game_data)
-    rows_fed = min(1000,len(game_data))
+    for games_test_counter in range(0,len(games_test),10):
+        try:
+            games_test_subset = games_test[games_test_counter:games_test_counter+10]
 
-    X_train = None
-    X_test = None
+            game_data = []
+            game_classes = []
+            for i, game in enumerate(games.values()):
+                if i >= len(games)*sampleperc:
+                    break
+                game_data.append(game.get_vector())
+                game_classes.append(game.get_class())
 
-    if True: # make vector_np out of scope
-        vector_np = scaler.fit_transform(np.asarray(game_data).astype(np.float64)[0:,0:])
-        pca = IncrementalPCA(n_components=features_after,batch_size=16)
-        for i in range(0,math.floor(rows_prv/rows_fed)): # perform partial fit
-            lower = i*rows_fed
-            upper = (i+1)*rows_fed
-            pca.partial_fit(vector_np[lower:upper])
-        X_train = pca.transform(vector_np)[:-len(games_test)]
-        X_test = pca.transform(vector_np)[len(games):]
-    y_train = np.array(game_classes)
+            for i, game in enumerate(games_test_subset):
+                game_data.append(game.get_vector())
 
-    c = RandomForestClassifier(n_estimators=30,criterion="gini",max_depth=10,random_state=518629550)
-    c.fit(X_train,y_train)
-    predicted = c.predict(X_test)
-    predict_list = [["Game Name","Popular?"]]
-    for i, _ in enumerate(predicted):
-        predict_list.append([games_test[i].get_name(),"True" if predicted[i] == 1 else "False"])
-    parse.createCSV("%s/classified_games.csv" % fp,predict_list)
+
+            rows_prv = len(game_data)
+            rows_fed = min(1000,len(game_data))
+            features_before = len(game_data[0])
+            X_train = None
+            X_test = None
+
+            if True: # make vector_np out of scope
+                vector_np = scaler.fit_transform(np.asarray(game_data).astype(np.float64)[0:,0:])
+                pca = IncrementalPCA(n_components=features_after,batch_size=16)
+                for i in range(0,math.floor(rows_prv/rows_fed)): # perform partial fit
+                    lower = i*rows_fed
+                    upper = (i+1)*rows_fed
+                    pca.partial_fit(vector_np[lower:upper])
+                X_train = pca.transform(vector_np)[:-len(games_test_subset)]
+                X_test = pca.transform(vector_np)[len(games):]
+            y_train = np.array(game_classes)
+
+            c = RandomForestClassifier(n_estimators=30,criterion="gini",max_depth=10,random_state=518629550)
+            c.fit(X_train,y_train)
+            predicted = c.predict(X_test)
+            for i, _ in enumerate(predicted):
+                predict_list.append([games_test_subset[i].get_name(),"True" if predicted[i] == 1 else "False"])
+            log.sofar("Classifying Games",games_test_counter,len(games_test),len(games_test))
+        except Exception as e:
+            break
+            log.info(e)
+    parse.appendCSV("%s/classified_games.csv" % fp,predict_list)
 
 def testClassifiers(fp,games,pos_ratio,sampleperc=0.1,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True,show=False):
 
