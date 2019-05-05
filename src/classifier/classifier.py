@@ -61,7 +61,7 @@ def predict(fp,games,games_test,sampleperc=1):
     predicted = c.predict(X_test)
     predict_list = [["Game Name","Popular?"]]
     for i, _ in enumerate(predicted):
-        predict_list.append([games_test[i].get_name(),predicted[i]])
+        predict_list.append([games_test[i].get_name(),"True" if predicted[i] == 1 else "False"])
     parse.createCSV("%s/classified_games.csv" % fp,predict_list)
 
 def testClassifiers(fp,games,pos_ratio,sampleperc=0.1,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True,show=False):
