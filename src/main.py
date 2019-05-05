@@ -9,7 +9,7 @@ import plots.plot as plt
 import classifier.classifier as clf
 from collections import defaultdict
 
-VERSION = 1
+VERSION = 3
 F_IN = "data"
 F_APPS = "%s/output/apps/" % F_IN
 F_SPY = "%s/output/steamspy/" % F_IN
