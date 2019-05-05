@@ -97,3 +97,25 @@ def getTags(games):
                 if not key in tags:
                     tags.append(key)
     return tags
+
+# returns a list of games that game out up to a variable number of years ago.
+def getRecentGames(games, cutoff_year):
+    old_games = []
+    strdate = ""
+    for game in games.values():
+        splitdate = game.get_release_date().split(" ")
+        if len(splitdate) == 3:
+            strdate = splitdate[2]  
+        if strdate.isdigit():
+            curdate = int(strdate)
+        else:
+            curdate = 0
+        if not ((game.get_positive() + game.get_negative()) > 0) and (game.get_release_date() != None) and (curdate >= cutoff_year):
+            old_games.append(game.get_id())
+
+    # construct recent game
+    for game in old_games:
+        games.pop(game)
+    return games
+
+

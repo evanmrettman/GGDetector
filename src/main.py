@@ -62,6 +62,12 @@ def main():
         all_langs = pp.getLanguages(games)
         all_tags = pp.getTags(games)
 
+        # Remove old games from the list
+        old_len = len(games)
+        games = pp.getRecentGames(games, 2018)
+        log.info("Removed %d games from list of %d. %d games are left." % (old_len-len(games),old_len,len(games)))
+
+
         if False:
             log.info("plats")
             log.info(all_platforms)
