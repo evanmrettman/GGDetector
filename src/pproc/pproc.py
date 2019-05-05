@@ -13,6 +13,9 @@ def CreateGames(json_dicts):
         log.sofar("Creating Games",i,len(json_dicts),10)
     return games
 
+def inputGame(json):
+    return Game(json, True)
+
 def ProcessAddSteamSpy(json_dicts, games):
     spy_dict_index = defaultdict(dict)
     for item in json_dicts:

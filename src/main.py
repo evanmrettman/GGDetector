@@ -13,6 +13,7 @@ VERSION = 1
 F_IN = "data"
 F_APPS = "%s/output/apps/" % F_IN
 F_SPY = "%s/output/steamspy/" % F_IN
+F_TEST_INPUT = "%s/input/" % F_IN
 F_OUT = "output/v_%02d" % VERSION
 F_OUT_JSON = "data/output/appinfo.json"
 F_OUT_ERROR = "data/output/errorids.json"
@@ -25,6 +26,8 @@ def main():
     GetTestingData = False
     SteamAPI = False
     SteamSpy = False
+    TestInput = True
+    NumberOfTestInputs = 2
 
     if GetTestingData:
         log.processing("Gathering Application List")
@@ -38,8 +41,8 @@ def main():
             log.processing("Requesting AppIds from Steam Spy")
             request.requestEachAppToJSON_SteamAPI(applist)
     else:
-        limit_input = False
-        limit_value = 5000
+        limit_input = True
+        limit_value = 1000
 
         log.processing("Gathering JSON Dictionaries from Files")
         apps = parse.readDirectoryJSON(F_APPS,lim=limit_input,lim_value=limit_value)
@@ -122,6 +125,26 @@ def main():
                 all_tags
                 ))
             log.sofar("Vectorizing Games", i, len(games), 10)
+
+        # Load input here
+        if TestInput:
+            test_games = []
+            test_vectors = []
+            for x in range(NumberOfTestInputs):
+                test_game = pp.inputGame(parse.readJSON("%sinput%d.json" % (F_TEST_INPUT, x)))
+                test_vector = test_game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
+                test_games.append(test_game)
+                test_vectors.append(test_vector)
+
+        if True: #Test to make sure test input is correct
+            log.info("Here's the test vectors:")
+            for x in test_vectors:
+                log.info(x)
+            log.info("Here's a training vector for reference:")
+            log.info(vectors[5])
+            time.sleep(5) # pausing for a moment to let you read
+
+
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
