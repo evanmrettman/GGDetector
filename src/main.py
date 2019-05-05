@@ -38,7 +38,7 @@ def main():
             log.processing("Requesting AppIds from Steam Spy")
             request.requestEachAppToJSON_SteamAPI(applist)
     else:
-        limit_input = False
+        limit_input = True
         limit_value = 5000
 
         log.processing("Gathering JSON Dictionaries from Files")

@@ -29,27 +29,31 @@ def getPlatforms(games):
         game_platforms = game.get_platforms()
         if game_platforms != None and len(game_platforms) != 0:
             for platform in game_platforms:
-                if not platform in platforms:
+                if (not platform in platforms):
                     platforms.append(platform)
     return platforms
 
-def getDevelopers(games):
+def getDevelopers(games, mini = 1):
     developers = []
+    occ = defaultdict(int) #number of occurences
     for game in games.values():
         game_developers = game.get_developers()
         if game_developers != None and len(game_developers) != 0:
             for developer in game_developers:
-                if not developer in developers:
+                occ[developer] += 1
+                if (occ[developer] >= mini) and (not developer in developers):
                     developers.append(developer)
     return developers
 
-def getPublishers(games):
+def getPublishers(games, mini = 1):
     publishers = []
+    occ = defaultdict(int) #number of occurences
     for game in games.values():
         game_publishers = game.get_publishers()
         if game_publishers != None and len(game_publishers) != 0:
             for publisher in game_publishers:
-                if not publisher in publishers:
+                occ[publisher] += 1
+                if (occ[publisher] >= mini) and (not publisher in publishers):
                     publishers.append(publisher)
     return publishers
 
@@ -88,13 +92,15 @@ def getLanguages(games):
     return langs
 
 #returns 
-def getTags(games):
+def getTags(games, mini = 100):
     tags = []
+    occ = defaultdict(int) #number of occurences
     for game in games.values():
         game_tags = game.get_tags()
         if game_tags != None and len(game_tags) != 0:
             for key in game_tags.keys():
-                if not key in tags:
+                occ[key] += 1
+                if (occ[key] >= mini)  and (not key in tags):
                     tags.append(key)
     return tags
 
