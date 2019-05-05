@@ -143,6 +143,9 @@ def main():
         log.processing("Creating Classifier Data Graphs")
         plt.createClassifierGraphs(F_OUT,"%s/classifier_data/" % F_OUT)
 
+        log.processing("Classifying Test Games")
+        clf.predict(F_OUT,games,test_games)
+
 if __name__ == "__main__":
     log.starting()
     main()
