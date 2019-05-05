@@ -105,7 +105,7 @@ class Game:
         self.__discount= int(self.__discount) if self.__discount != None else 0
         langstr = self.__initHelp(spy_response,"languages", self.__supported_languages)
         if langstr != None and len(langstr) > 0:
-            self.__supported_languages = langstr.split(", ")
+                self.__supported_languages = langstr.split(", ")
         self.__ccu = self.__initHelp(spy_response,"ccu", self.__ccu)
         self.__tags = self.__initHelp(spy_response,"tags" , self.__tags)
         

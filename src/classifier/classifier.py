@@ -3,6 +3,7 @@ import random
 import datetime
 import utility.logging as log
 import files.parse as parse
+import math
 from collections import defaultdict
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
@@ -14,14 +15,14 @@ from sklearn.svm import SVC
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.decomposition import PCA
+from sklearn.decomposition import IncrementalPCA
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 
 def getRandomInt():
     return random.randint(0,sys.maxsize)
 
-def testClassifiers(fp,games,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True,show=False):
+def testClassifiers(fp,games,sampleperc=0.1,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True,show=False):
 
     fullpath = "%s/classifier_test.csv" % fp
     kf = KFold(n_splits=10)
@@ -29,14 +30,28 @@ def testClassifiers(fp,games,TestKNN=True,TestDTree=True,TestRForest=True,TestNB
     game_data = []
     game_classes = []
 
-    for game in games.values():
+    for i, game in enumerate(games.values()):
+        if i >= len(games)*sampleperc:
+            break
         game_data.append(game.get_vector())
         game_classes.append(game.get_class())
 
-    X = MinMaxScaler(feature_range=[0,1]).fit_transform(np.array(game_data).astype('float64')[0:,0:])
-    pca = PCA(n_components=0.99)
-    pca.fit(X)
-    X_pca = pca.transform(X)
+    log.info("\tUsing sample size from testing data of %dx%d (%d)." % (len(game_data),len(game_data[0]),len(game_data)*len(game_data[0])))
+
+    scaler = MinMaxScaler(feature_range=[0,1])
+    vector_np = scaler.fit_transform(np.asarray(game_data).astype(np.float64)[0:,0:])
+    features_before = len(game_data[0])
+    features_after = 500 #features_after if features_after > len(vectors) else len(vectors)-10
+    rows_prv = len(game_data) # rows previously existing in the vector
+    rows_fed = min(1000,len(game_data)) # rows to feed it at a time
+
+    pca = IncrementalPCA(n_components=features_after,batch_size=16)
+    for i in range(0,math.floor(rows_prv/rows_fed)): # perform partial fit
+        lower = i*rows_fed
+        upper = (i+1)*rows_fed
+        pca.partial_fit(vector_np[lower:upper])
+
+    X_pca = pca.transform(vector_np)
 
     plt.close('all')
     plt.figure()
