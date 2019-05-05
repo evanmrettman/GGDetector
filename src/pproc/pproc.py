@@ -44,12 +44,12 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
         randJSON["is_free"] = False
     
     randJSON["developers"] = "Ryan and Evan"
-    if (len(devs) and random.randint(0,2)):
+    if (len(devs) and random.randint(0,6)):
         rand = random.randint(0,len(devs)-1)
         randJSON["developers"] = devs[rand]
     
     randJSON["publishers"] = "Ryan and Evan"
-    if (len(pubs) and random.randint(0,2)):
+    if (len(pubs) and random.randint(0,6)):
         rand = random.randint(0,len(pubs)-1)
         randJSON["publishers"] = pubs[rand]
 
@@ -97,7 +97,7 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
     if (random.randint(0,2)):
         randJSON["owners"] = "0 .. 20,000,000"
 
-    rand = random.randint(0,2000)
+    rand = random.randint(0,100)
     randJSON["avg_play_forever"] = rand + random.randint(0,100)
     randJSON["avg_play_2weeks"] = rand + random.randint(0,100)
     randJSON["median_play_forever"] = rand + random.randint(0,100)
@@ -114,7 +114,7 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
 
     randJSON["supported_languages"] = langs[random.randint(0,len(langs)-1)]
 
-    randJSON["ccu"] = math.floor(math.log10(random.randint(0,10000))) * random.randint(0,1000) + random.randint(0,100)
+    randJSON["ccu"] = math.floor(math.log10(random.randint(1,9000))) * random.randint(0,1000) + random.randint(0,100)
 
     #print( tags[random.randint(0,len(tags)-1)] )
     randJSON["tags"]= {}
