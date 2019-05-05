@@ -32,8 +32,8 @@ def main():
             except ValueError:
                 raise Exception("Command line argument for classifier ratio is not a numerical value.")
             pos_ratio = float(sys.argv[1])
-            if pos_ratio < 0 or pos_ratio > 1: # check if its a valid range
-                raise Exception("Command line argument for classifier ratio is not within [0,1] range.")
+            if pos_ratio <= 0 or pos_ratio >= 1: # check if its a valid range
+                raise Exception("Command line argument for classifier ratio is not within (0,1) range.")
         except Exception as e:
             log.info(e) # we raised an error, print it for understanding
             return # leave because we failed with the command line argument
@@ -138,7 +138,10 @@ def main():
 
         if TestClassifiers:
             log.processing("Testing Classifiers")
-            clf.testClassifiers(F_OUT,games,sampleperc=0.7,show=False)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
+            clf.testClassifiers(F_OUT,games,pos_ratio,sampleperc=0.7,show=False)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
+
+        log.processing("Creating Classifier Data Graphs")
+        plt.createClassifierGraphs(F_OUT,"%s/classifier_data/" % F_OUT)
 
 if __name__ == "__main__":
     log.starting()

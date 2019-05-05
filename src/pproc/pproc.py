@@ -14,7 +14,7 @@ def CreateGames(json_dicts,pos_ratio):
     return games
 
 def inputGame(json):
-    return Game(json, True)
+    return Game(json, 0, True)
 
 def ProcessAddSteamSpy(json_dicts, games):
     spy_dict_index = defaultdict(dict)

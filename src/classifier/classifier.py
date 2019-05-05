@@ -22,9 +22,9 @@ import matplotlib.pyplot as plt
 def getRandomInt():
     return random.randint(0,sys.maxsize)
 
-def testClassifiers(fp,games,sampleperc=0.1,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True,show=False):
+def testClassifiers(fp,games,pos_ratio,sampleperc=0.1,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True,show=False):
 
-    fullpath = "%s/classifier_test.csv" % fp
+    fullpath = "%s/classifier_data/pos_ratio=%02d%%.csv" % (fp,int(pos_ratio*100))
     kf = KFold(n_splits=10)
     classifiers = []
     game_data = []

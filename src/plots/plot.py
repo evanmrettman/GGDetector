@@ -4,18 +4,79 @@ from collections import defaultdict
 from collections import Counter
 import matplotlib.ticker as mticker
 from matplotlib.ticker import FuncFormatter
+from os import listdir
+import files.parse as parse 
 
 green = '#42f471'
 red = '#f44141'
 
-def createClassifierGraph(fp,classifier_dict):
+def createClassifierGraphs(fp_out,fp_in):
 
     global green
     global red
 
-    classifier_names = list(classifier_dict.keys())
-    classifier_values = list(classifier_dict.values())
-    plotHistogram("Classifier Accuracies","Classifier Names",classifier_dict,fp,red,green)
+    for f in listdir(fp_in):
+        percent = f[-7:-5]
+        f = "%s%s" % (fp_in,f)
+        percent_data = parse.readCSV(f)
+
+        knn = []
+        dtree = []
+        rforest = []
+        nbayes = []
+        nnetwork = []
+        svm = []
+
+        for row in percent_data:
+            name = row[0]
+            if name == "KNN":
+                knn.append(row[1:])
+            elif name == "DTree":
+                dtree.append(row[1:])
+            elif name == "RForest":
+                rforest.append(row[1:])
+            elif name == "NBayes":
+                nbayes.append(row[1:])
+            elif name == "NNetwork":
+                nnetwork.append(row[1:])
+            elif name == "SVM":
+                svm.append(row[1:])
+
+        plotBoxplot("Classifiers with >%s%% Approved" % percent,
+            "Classifiers",
+            "Accuraccy",
+            ["KNN","DTree","RForest","NBayes","NNetwork","SVM"],
+            [
+                [float(r[0])*100 for r in knn],
+                [float(r[0])*100 for r in dtree],
+                [float(r[0])*100 for r in rforest],
+                [float(r[0])*100 for r in nbayes],
+                [float(r[0])*100 for r in nnetwork],
+                [float(r[0])*100 for r in svm],
+            ],
+            fp_out,
+            red,
+            green)
+
+def plotBoxplot(name,xlabel,ylabel,catagories,data,fp,c_min,c_max):
+    gray = '#a8a8a8'
+    shortPhrase = ""
+    limit = 10
+    fig = plt.figure()
+
+    for spine in plt.gca().spines.values():
+        spine.set_visible(False)
+
+    plt.xticks(rotation=45)
+    
+    boxplot=plt.boxplot(data,labels=catagories)
+    #plt.ylim([0,100])
+    fig.suptitle("Boxplot of %s%s" % (name,shortPhrase))
+    plt.gca().yaxis.set_major_formatter(FuncFormatter(lambda y, pos: str(y) + r'$\%$' if matplotlib.rcParams['text.usetex'] else str(y) + '%'))
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.tight_layout()
+    fig.savefig("%s/boxplot_%s.png" % (fp,str.lower(name).replace(" ","_").replace(">","")))
 
 def createGameGraphs(fp,games_dict):
 

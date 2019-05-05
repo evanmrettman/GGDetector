@@ -34,6 +34,15 @@ def appendCSV(filepath,data):
     writer.writerows(data)
     f.close()
 
+def readCSV(filepath):
+    f = open(filepath,'r')
+    reader = csv.reader(f)
+    contents = []
+    for row in reader:
+        contents.append(row)
+    f.close()
+    return contents
+
 def createCSV(filepath,data):
     f = open(filepath,"w",newline='')
     writer = csv.writer(f)
