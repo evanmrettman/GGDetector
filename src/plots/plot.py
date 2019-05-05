@@ -35,8 +35,8 @@ def createClassifierGraphs(fp_out,fp_in):
                 dtree.append(row[1:])
             elif name == "RForest":
                 rforest.append(row[1:])
-            elif name == "NBayes":
-                nbayes.append(row[1:])
+            elif name == "NBayes": # ignore nbayes because it sucks
+                pass#nbayes.append(row[1:])
             elif name == "NNetwork":
                 nnetwork.append(row[1:])
             elif name == "SVM":
@@ -45,12 +45,19 @@ def createClassifierGraphs(fp_out,fp_in):
         plotBoxplot("Classifiers with >%s%% Approved" % percent,
             "Classifiers",
             "Accuraccy",
-            ["KNN","DTree","RForest","NBayes","NNetwork","SVM"],
+            [
+                "KNN",
+                "DTree",
+                "RForest",
+                #"NBayes",
+                "NNetwork",
+                "SVM"
+            ],
             [
                 [float(r[0])*100 for r in knn],
                 [float(r[0])*100 for r in dtree],
                 [float(r[0])*100 for r in rforest],
-                [float(r[0])*100 for r in nbayes],
+                #[float(r[0])*100 for r in nbayes],
                 [float(r[0])*100 for r in nnetwork],
                 [float(r[0])*100 for r in svm],
             ],
@@ -158,8 +165,9 @@ def plotHistogram(name,xlabel,d,fp,c_min,c_max):
     for spine in plt.gca().spines.values():
         spine.set_visible(False)
 
+    plt.xticks(rotation=45)
+
     if len(d) > limit/2:
-        plt.xticks(rotation=90)
         if len(d) > limit:
             shortPhrase = " (Limited to %d Catagories)" % limit
             dcopy = dict(Counter(dcopy).most_common(limit))    
