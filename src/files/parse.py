@@ -11,11 +11,11 @@ def parseApps(filepath):
     return loaded_json
 
 # treat all files in the given directory as json and parse them as such then return a list of dictionaries contianing the information
-def readDirectoryJSON(directory):
+def readDirectoryJSON(directory,lim=False,lim_value=5000):
     dicts = []
     dir_files = os.listdir(directory)
     for i, file in enumerate(dir_files):
-        if True and i >= 5000: # debug: only grab a sample set for now
+        if lim and i >= lim_value: # debug: only grab a sample set for now
             break
         with open(directory+file, "r", encoding="utf8") as f:
             dicts.append(json.loads(f.readline()))

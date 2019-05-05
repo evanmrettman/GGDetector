@@ -38,8 +38,11 @@ def main():
             log.processing("Requesting AppIds from Steam Spy")
             request.requestEachAppToJSON_SteamAPI(applist)
     else:
+        limit_input = False
+        limit_value = 5000
+
         log.processing("Gathering JSON Dictionaries from Files")
-        apps = parse.readDirectoryJSON(F_APPS)
+        apps = parse.readDirectoryJSON(F_APPS,lim=limit_input,lim_value=limit_value)
         log.info("Gathered %d app data." % len(apps))
         
         log.processing("Converting JSON data to Game Objects")
@@ -47,7 +50,7 @@ def main():
         log.info("%d games created." % len(games))
 
         log.processing("Gathering SteamSpy JSON Dictionaries from files")
-        spy = parse.readDirectoryJSON(F_SPY)
+        spy = parse.readDirectoryJSON(F_SPY,lim=limit_input,lim_value=limit_value)
         log.info("Gathered %d steamspy data." % len(spy))
 
         log.processing("Adding SteamSpy JSON data to Game Objects")
@@ -65,7 +68,9 @@ def main():
 
         # Remove old games from the list
         old_len = len(games)
-        games = pp.getRecentGames(games, 2018)
+        yearlimit = 2018
+        log.processing("Removing games that are older than the year %d." % yearlimit)
+        games = pp.getRecentGames(games, yearlimit)
         log.info("Removed %d games from list of %d. %d games are left." % (old_len-len(games),old_len,len(games)))
 
 
@@ -108,7 +113,7 @@ def main():
         plt.createGameGraphs(F_OUT,games)
 
         log.processing("Testing Classifiers")
-        clf.testClassifiers(F_OUT,games)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
+        clf.testClassifiers(F_OUT,games,show=True)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
 
 
 

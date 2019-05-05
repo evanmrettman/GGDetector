@@ -14,11 +14,14 @@ from sklearn.svm import SVC
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
 
 def getRandomInt():
     return random.randint(0,sys.maxsize)
 
-def testClassifiers(fp,games,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True):
+def testClassifiers(fp,games,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True,show=False):
 
     fullpath = "%s/classifier_test.csv" % fp
     kf = KFold(n_splits=10)
@@ -30,7 +33,22 @@ def testClassifiers(fp,games,TestKNN=True,TestDTree=True,TestRForest=True,TestNB
         game_data.append(game.get_vector())
         game_classes.append(game.get_class())
 
-    X_train,X_test,y_train,y_test = train_test_split(np.array(game_data).astype('float64'),np.asarray(game_classes).astype('float64'),test_size=0.33)
+    X = MinMaxScaler(feature_range=[0,1]).fit_transform(np.array(game_data).astype('float64')[0:,0:])
+    pca = PCA(n_components=0.99)
+    pca.fit(X)
+    X_pca = pca.transform(X)
+
+    plt.close('all')
+    plt.figure()
+    plt.plot(np.cumsum(pca.explained_variance_ratio_))
+    plt.xlabel('Components Chosen')
+    plt.ylabel('Variance')
+    plt.title('Explained Variance')
+    plt.savefig("%s/explained_variance.png" % (fp))
+    if show:
+        plt.show()
+
+    X_train,X_test,y_train,y_test = train_test_split(X_pca,np.asarray(game_classes).astype('float64'),test_size=0.33)
 
     log.info("Training Data: %dx%d" % (X_train.shape[0],X_train.shape[1]))
     log.info("Training Class Data: %d" % (y_train.shape[0]))
