@@ -56,6 +56,13 @@ def main():
         log.processing("Adding SteamSpy JSON data to Game Objects")
         pp.ProcessAddSteamSpy(spy,games)
 
+        # Remove old games from the list
+        old_len = len(games)
+        yearlimit = 2018
+        log.processing("Removing games that are older than the year %d." % yearlimit)
+        games = pp.getRecentGames(games, yearlimit)
+        log.info("Removed %d games from list of %d. %d games are left." % (old_len-len(games),old_len,len(games)))
+
         log.processing("Creating list of keys for components in vectorization")
         all_platforms = pp.getPlatforms(games)
         all_categories = pp.getCategories(games)
@@ -66,12 +73,6 @@ def main():
         all_tags = pp.getTags(games)
         log.info("%d vector data entries created." % (len(all_platforms)+len(all_categories)+len(all_developers)+len(all_publishers)+len(all_genres)+len(all_langs)+len(all_tags)))
 
-        # Remove old games from the list
-        old_len = len(games)
-        yearlimit = 2018
-        log.processing("Removing games that are older than the year %d." % yearlimit)
-        games = pp.getRecentGames(games, yearlimit)
-        log.info("Removed %d games from list of %d. %d games are left." % (old_len-len(games),old_len,len(games)))
 
 
         if False:
@@ -107,7 +108,7 @@ def main():
         vectors = []
         for i, game in enumerate(games.values()):
             vectors.append(game.vectorize(all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags))
-            log.sofar("Vectorizing Games", i, len(games), 4)
+            log.sofar("Vectorizing Games", i, len(games), 10)
 
         log.processing("Making Graphs")
         plt.createGameGraphs(F_OUT,games)
