@@ -13,109 +13,105 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 def getRandomInt():
     return random.randint(0,sys.maxsize)
 
-def testClassifiers(fp,games):
+def testClassifiers(fp,games,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True):
 
-    data = []
-    classes = []
-    for game in games.values():
-        #data.append(game.vectorize())
-        data.append(game.get_vector())
-        classes.append(game.get_class())
-
+    fullpath = "%s/classifier_test.csv" % fp
+    kf = KFold(n_splits=10)
     classifiers = []
-    X = np.asarray(data)
-    y = np.asarray(classes)
+    game_data = []
+    game_classes = []
 
-    log.info("DEBUG") #debug
-    log.info(X)
-    log.info(y)
+    for game in games.values():
+        game_data.append(game.get_vector())
+        game_classes.append(game.get_class())
 
-    # Create KFolds
-    kf = KFold(n_splits=2)
+    X_train,X_test,y_train,y_test = train_test_split(np.array(game_data).astype('float64'),np.asarray(game_classes).astype('float64'),test_size=0.33)
 
+    log.info("Training Data: %dx%d" % (X_train.shape[0],X_train.shape[1]))
+    log.info("Training Class Data: %d" % (y_train.shape[0]))
+    log.info("Testing Data: %dx%d" % (X_test.shape[0],X_test.shape[1]))
+    log.info("Testing Class Data: %d" % (y_test.shape[0]))
 
-    # Create KNN
-    for k in range(1,21,2):
-        for weight in ["uniform","distance"]:
-            for alg in ["ball_tree","kd_tree","brute"]:
-                classifiers.append(KNeighborsClassifier(n_neighbors=k,weights=weight,algorithm=alg,n_jobs=-1))
-
-    # Create Decision Tree
-    for criteria in ["gini","entropy"]:
-        for split in ["best","random"]:
-            for depth in [10,20,30,40,50,60,70,80,90,100,None]:
-                for _ in range(0,20):
-                    state = getRandomInt()
-                    classifiers.append(DecisionTreeClassifier(criterion=criteria,splitter=split,max_depth=depth,random_state=state))
-
-    # Create Random Forest
-    for estimator in range(10,100,10):
-        for criteria in ["gini","entropy"]:
-            for depth in [10,20,30,40,50,60,70,80,90,100,None]:
-                for _ in range(0,20):
-                    state = getRandomInt()
-                    classifiers.append(RandomForestClassifier(n_estimators=estimator,criterion=criteria,max_depth=depth,random_state=state))
-
-    # Create Naive Bayes
-    classifiers.append(GaussianNB()) # nothing to change that I understand
-
-    # Create Neural Network
-    for active in ["identity","logistic","tanh","relu"]:
-        for solve in ["lbfgs","sgd","adam"]:
-            for rate in ["cosntant","invscaling","adaptive"]:
-                for _ in range(0,20):
-                    state = getRandomInt()
-                    classifiers.append(MLPClassifier(activation=active,solver=solve,learning_rate=rate,random_state=state))
-    
-    # Create SVM
-    for kern in ["rbf","linear","poly","sigmoid","precomputed"]:
-        for _ in range(0,20):
-            state = getRandomInt()
-            classifiers.append(SVC(kernel=kern,random_state=state))
-
-    now = datetime.datetime.now()
-    filename = "%s/classifier_metrics_%s.csv" % (fp,"%d-%d-%d_%d-%d.%d_%d" % (now.year,now.month,now.day,now.hour,now.minute,now.second,now.microsecond))
-
-    parse.createCSV(filename,[["Classifier Name","Accuracy Score"]])
+    knn_ks = range(1,21,4)
+    random_range = range(0,1)
+    tree_depth = [10,20,30,40,50,60,70,80,90,100,None]
+    rforest_estimators = range(10,100,10)
     dict_to_parse = defaultdict(list)
-    i = 0
-    for train_indexs, test_indexs in kf.split(X):
-        X_train, y_train, X_test, y_test = X[train_indexs], y[train_indexs], X[test_indexs], y[test_indexs]
-        for classifier in classifiers:
+    acc_data = []
 
-            classifier.fit(X_train,y_train) # fit it
-
-            class_name = ""
-            if isinstance(classifier,KNeighborsClassifier):
-                class_name = "KNN"
-            elif isinstance(classifier,DecisionTreeClassifier):
-                class_name = "Decision Tree"
-            elif isinstance(classifier,RandomForestClassifier):
-                class_name = "Random Forest"
-            elif isinstance(classifier,GaussianNB):
-                class_name = "Gaussian Naive Bayes"
-            elif isinstance(classifier,MLPClassifier):
-                class_name = "Multi-layered Neural Network"
-            elif isinstance(classifier,SVC):
-                class_name = "Support Vector Machine"
-
-            class_list = dict_to_parse[class_name]
-            acc = accuracy_score(y_test,classifier.predict(X_test))
-            if len(class_list) == 0:
-                dict_to_parse[class_name] = [0,0,0]
-            class_list[0] += acc # summation of acc
-            class_list[1] += 1 # incriment count
-            class_list[2] = class_list[0] / class_list[1]
-            log.sofar("Testing Classifiers @ %s" % class_name,i,len(classifiers)*kf.get_n_splits(),100)
-
-    list_to_append = []
-    for key, value in dict_to_parse.items():
-        list_to_append.append([key,value[2]])
-    parse.appendCSV(filename,list_to_append)
+    if TestKNN:
+        log.info("\tTesting KNNs")
+        for k in knn_ks:
+            for weight in ["uniform","distance"]:
+                for alg in ["ball_tree","kd_tree","brute"]:
+                    c = KNeighborsClassifier(n_neighbors=k,weights=weight,algorithm=alg)
+                    c.fit(X_train,y_train)
+                    acc = accuracy_score(y_test,c.predict(X_test))
+                    parse.appendCSV(fullpath,[["KNN",acc,k,weight,alg]])
+                    log.info("\t\tAccuraccy %f with %d,%s,%s" % (acc,k,weight,alg))
+        log.info("\tFinished KNNs")
+    if TestDTree:
+        log.info("\tTesting DTrees")
+        for criteria in ["gini","entropy"]:
+            for split in ["best","random"]:
+                for depth in tree_depth:
+                    for _ in random_range:
+                        random_state = getRandomInt()
+                        c = DecisionTreeClassifier(criterion=criteria,splitter=split,max_depth=depth,random_state=random_state)
+                        c.fit(X_train,y_train)
+                        acc = accuracy_score(y_test,c.predict(X_test))
+                        parse.appendCSV(fullpath,[["DTree",acc,criteria,split,depth,random_state]])
+                        log.info("\t\tAccuraccy %f with %s,%s,%s" % (acc,criteria,split,depth))
+        log.info("\tFinished DTrees")
+    if TestRForest:
+        log.info("\tTesting RForests")
+        for estimator in rforest_estimators:
+            for criteria in ["gini","entropy"]:
+                for depth in tree_depth:
+                    for _ in random_range:
+                        random_state = getRandomInt()
+                        c = RandomForestClassifier(n_estimators=estimator,criterion=criteria,max_depth=depth,random_state=random_state)
+                        c.fit(X_train,y_train)
+                        acc = accuracy_score(y_test,c.predict(X_test))
+                        log.info("\t\tAccuraccy %f with %s,%s,%s" % (acc,criteria,estimator,depth))
+                        parse.appendCSV(fullpath,[["RForest",acc,estimator,criteria,depth,random_state]])
+        log.info("\tFinished RForests")
+    if TestNBayes:
+        log.info("\tTesting NBayes")
+        c = GaussianNB() # nothing to change that I understand
+        c.fit(X_train,y_train)
+        acc = accuracy_score(y_test,c.predict(X_test))
+        log.info("\t\tAccuraccy %f" % (acc))
+        parse.appendCSV(fullpath,[["NBayes",acc]])
+        log.info("\tFinished NBayes")
+    if TestNNetwork:
+        log.info("\tTesting NNetworks")
+        for active in ["identity","logistic","tanh","relu"]:
+            for solve in ["lbfgs","sgd","adam"]:
+                for _ in random_range:
+                    random_state = getRandomInt()
+                    c = MLPClassifier(activation=active,solver=solve,random_state=random_state)
+                    c.fit(X_train,y_train)
+                    acc = accuracy_score(y_test,c.predict(X_test))
+                    log.info("\t\tAccuraccy %f with %s,%s" % (acc,active,solve))
+                    parse.appendCSV(fullpath,[["NNetwork",acc,active,solve,random_state]])
+        log.info("\tFinished NNetworks")
+    if TestSVM:
+        log.info("\tTesting SVMs")
+        for kern in ["rbf","poly","sigmoid"]: # linear was real slow
+            for _ in random_range:
+                random_state = getRandomInt()
+                c = SVC(gamma="scale",kernel=kern,random_state=random_state)
+                c.fit(X_train,y_train)
+                acc = accuracy_score(y_test,c.predict(X_test))
+                log.info("\t\tAccuraccy %f with %s" % (acc,kern))
+                parse.appendCSV(fullpath,[["SVM",acc,kern,random_state]])
+        log.info("\tFinished SVMs")
 
 if __name__ == "__main__":
     number_of_items = 100

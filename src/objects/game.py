@@ -98,8 +98,11 @@ class Game:
         self.__median_play_forever = self.__initHelp(spy_response,"median_forever", self.__median_play_forever)
         self.__median_play_2weeks = self.__initHelp(spy_response,"median_2weeks", self.__median_play_2weeks)
         self.__price = self.__initHelp(spy_response,"price", self.__price)
+        self.__price = int(self.__price) if self.__price != None else 0
         self.__initialprice = self.__initHelp(spy_response,"initialprice", self.__initialprice )
+        self.__initialprice = int(self.__initialprice) if self.__initialprice != None else 0
         self.__discount = self.__initHelp(spy_response,"discount", self.__discount)
+        self.__discount= int(self.__discount) if self.__discount != None else 0
         langstr = self.__initHelp(spy_response,"languages", self.__supported_languages)
         if langstr != None:
             self.__supported_languages = langstr.split(", ")
@@ -214,103 +217,74 @@ class Game:
         else:
             return 0
 
-
-    # pass a list of all possible platforms, categories, genres, languages, and tags to this function
     def vectorize(self, plats, cats, devs, pubs, genres, langs, tags):
 
         if not len(self.__vector) == 0:
             return self.__vector
 
-        # FINISH THIS BY FINISHING PPROC TO GET LISTS OF COMPONENTS
         vector = []
-        #vector.append(self.__id)
-        #vector.append(self.__type)
-        #vector.append(self.__name)
-        vector.append(self.__required_age) # good?
-        #vector.append(self.__is_free) # changing this
+        vector.append(self.__required_age)
         if self.__is_free:
             vector.append(1)
         else:
             vector.append(0)
         
-
-        #vector.append(self.__developers) # changing this
         for dev in devs:
             if dev in self.__developers:
                 vector.append(1)
-                #log.info("DEBUG: FOUND A MATCH")
             else:
                 vector.append(0)
 
-        #vector.append(self.__publishers) # changing this
         for pub in pubs:
             if pub in self.__publishers:
                 vector.append(1)
             else:
                 vector.append(0)
 
-        # vector.append(self.__platforms) # changing this
         for plat in plats:
             if plat in self.__platforms:
                 vector.append(1)
             else:
                 vector.append(0)
 
-        # vector.append(self.__categories) # changing this
         for cat in cats:
             if cat in self.__categories:
                 vector.append(1)
             else:
                 vector.append(0)
 
-        # vector.append(self.__genres)
         for genre in genres:
             if genre in self.__genres:
                 vector.append(1)
             else:
                 vector.append(0)
 
-        vector.append(self.__screenshot_count) # good?
+        vector.append(self.__screenshot_count)
+        vector.append(self.__movie_count)
+        #vector.append(int.from_bytes(str.encode(self.__owners),'big'))
+        vector.append(self.__avg_play_forever)
+        vector.append(self.__avg_play_2weeks)
+        vector.append(self.__median_play_forever)
+        vector.append(self.__median_play_2weeks)
+        vector.append(self.__price)
+        vector.append(self.__initialprice)
+        vector.append(self.__discount)
 
-        vector.append(self.__movie_count) # good?
-
-        # The following 6 commented out vector components are meant for achieving other data elsewhere
-        #vector.append(self.__coming_soon)
-        #vector.append(self.__release_date)
-        #vector.append(self.__score_rank)
-        #vector.append(self.__positive) 
-        #vector.append(self.__negative)
-        #vector.append(self.__userscore)
-
-        #vector.append(self.__owners) # changing
-        vector.append(int.from_bytes(str.encode(self.__owners),'big')) #test this?
-
-        vector.append(self.__avg_play_forever) # good?
-        vector.append(self.__avg_play_2weeks) # good?
-        vector.append(self.__median_play_forever) # good?
-        vector.append(self.__median_play_2weeks) # good?
-        vector.append(self.__price) # good?
-        vector.append(self.__initialprice) # good?
-        vector.append(self.__discount) # good?
-
-        #vector.append(self.__supported_languages) # changing
-        if(self.__supported_languages != None):
-            for lang in self.__supported_languages:
-                if lang in langs:
-                    #log.info("DEBUG: lang match found")
-                    vector.append(1)
-                else:
-                    vector.append(0)
+        for lang in langs:
+            if lang in self.__supported_languages:
+                vector.append(1)
+            else:
+                vector.append(0)
         
-        vector.append(self.__ccu) # good?
-
-        #vector.append(self.__tags) # changing
+        vector.append(self.__ccu)
+        
         for tag in tags:
             if tag in self.__tags:
-                vector.append(self.__tags[tag])
+                vector.append(int(self.__tags[tag]))
             else:
                 vector.append(0)
 
+        self.__vector = vector
 
         return vector
 
