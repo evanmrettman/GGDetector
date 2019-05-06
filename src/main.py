@@ -24,7 +24,7 @@ F_IN_LIST = "list_4_26_19.json"
 
 def main():
 
-    pos_ratio = 0.5
+    pos_ratio = 0.8
     if len(sys.argv) >= 2:
         try:
             try: # check if it is a float
@@ -116,6 +116,8 @@ def main():
                 all_tags
                 ))
             log.sofar("Vectorizing Games", i, len(games), 10)
+
+        log.info("Good to Bad ratio of games: %.3f" % pp.getGoodRatio(games))
 
         # Load input here
         test_games = []
