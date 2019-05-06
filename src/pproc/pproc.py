@@ -97,11 +97,18 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
     if (random.randint(0,2)):
         randJSON["owners"] = "0 .. 20,000,000"
 
-    rand = random.randint(0,100)
-    randJSON["avg_play_forever"] = rand + random.randint(0,100)
-    randJSON["avg_play_2weeks"] = rand + random.randint(0,100)
-    randJSON["median_play_forever"] = rand + random.randint(0,100)
-    randJSON["median_play_2weeks"] = rand + random.randint(0,100)
+    play = random.randint(0,1)
+    if (play):
+        rand = random.randint(0,100)
+        randJSON["avg_play_forever"] = rand + random.randint(0,100)
+        randJSON["avg_play_2weeks"] = rand + random.randint(0,75)
+        randJSON["median_play_forever"] = rand + random.randint(0,100)
+        randJSON["median_play_2weeks"] = rand + random.randint(0,75)
+    else:
+        randJSON["avg_play_forever"] = 0
+        randJSON["avg_play_2weeks"] = 0
+        randJSON["median_play_forever"] = 0
+        randJSON["median_play_2weeks"] = 0
 
     randJSON["price"] = 0
     randJSON["initialprice"] = 0
@@ -114,12 +121,15 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
 
     randJSON["supported_languages"] = langs[random.randint(0,len(langs)-1)]
 
-    randJSON["ccu"] = math.floor(math.log10(random.randint(1,100))) * random.randint(0,100) + random.randint(0,100)
+    if(play):
+        randJSON["ccu"] = math.floor(math.log10(random.randint(1,100))) * random.randint(0,100) + random.randint(0,100)
+    else:
+        randJSON["ccu"] = 0
 
     #print( tags[random.randint(0,len(tags)-1)] )
     randJSON["tags"]= {}
     if len(tags):
-        for x in range(0, random.randint(0,20)):
+        for x in range(0, random.randint(0,10)):
             randJSON["tags"][tags[random.randint(0,len(tags)-1)]] = random.randint(0,1000)
 
     return randJSON
