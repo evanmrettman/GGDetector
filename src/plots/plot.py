@@ -84,6 +84,7 @@ def plotBoxplot(name,xlabel,ylabel,catagories,data,fp,c_min,c_max):
     plt.ylabel(ylabel)
     plt.tight_layout()
     fig.savefig("%s/boxplot_%s.png" % (fp,str.lower(name).replace(" ","_").replace(">","")))
+    fig.gcf()
 
 def createGameGraphs(fp,games_dict):
 
@@ -188,3 +189,4 @@ def plotHistogram(name,xlabel,d,fp,c_min,c_max):
     #plt.ylabel(ylabel)
     plt.tight_layout()
     fig.savefig("%s/histogram_%s.png" % (fp,str.lower(name)))
+    fig.gcf()

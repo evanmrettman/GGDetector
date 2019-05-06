@@ -27,9 +27,10 @@ def predict(fp,games,games_test,sampleperc=1):
     predict_list = []#[["Game Name","Popular?"]]
     scaler = MinMaxScaler(feature_range=[0,1])
     features_after = 140
-    for games_test_counter in range(0,len(games_test),10):
+    lim = 100
+    for games_test_counter in range(0,len(games_test),lim):
         try:
-            games_test_subset = games_test[games_test_counter:games_test_counter+10]
+            games_test_subset = games_test[games_test_counter:games_test_counter+lim]
 
             game_data = []
             game_classes = []
@@ -67,8 +68,8 @@ def predict(fp,games,games_test,sampleperc=1):
                 predict_list.append([games_test_subset[i].get_name(),"True" if predicted[i] == 1 else "False"])
             log.sofar("Classifying Games",games_test_counter,len(games_test),len(games_test))
         except Exception as e:
+            log.info("Memory error occured @ %d." % games_test_counter)
             break
-            log.info(e)
     parse.appendCSV("%s/classified_games.csv" % fp,predict_list)
 
 def testClassifiers(fp,games,pos_ratio,sampleperc=0.1,TestKNN=True,TestDTree=True,TestRForest=True,TestNBayes=True,TestNNetwork=True,TestSVM=True,show=False):
@@ -112,6 +113,7 @@ def testClassifiers(fp,games,pos_ratio,sampleperc=0.1,TestKNN=True,TestDTree=Tru
     plt.savefig("%s/explained_variance.png" % (fp))
     if show:
         plt.show()
+    plt.gcf()
 
     X_train,X_test,y_train,y_test = train_test_split(X_pca,np.asarray(game_classes).astype('float64'),test_size=0.33)
 

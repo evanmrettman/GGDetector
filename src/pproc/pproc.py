@@ -114,7 +114,7 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
 
     randJSON["supported_languages"] = langs[random.randint(0,len(langs)-1)]
 
-    randJSON["ccu"] = math.floor(math.log10(random.randint(1,9000))) * random.randint(1,1000) + random.randint(1,100)
+    randJSON["ccu"] = math.floor(math.log10(random.randint(1,100))) * random.randint(0,100) + random.randint(0,100)
 
     #print( tags[random.randint(0,len(tags)-1)] )
     randJSON["tags"]= {}
