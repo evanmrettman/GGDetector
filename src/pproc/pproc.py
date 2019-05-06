@@ -124,6 +124,17 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
 
     return randJSON
 
+def getGoodRatio(games):
+    game_objs = games.values()
+    goodsum = 0
+    count = 0
+    for game in game_objs:
+        if game.get_class:
+            goodsum += 1
+        count += 1
+    return (goodsum / count)
+
+
 
 
 #retrieve list of all possible platforms, categories, genres, languages, and tags for vectorization
