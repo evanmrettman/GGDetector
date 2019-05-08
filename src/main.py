@@ -40,16 +40,19 @@ def main():
 
     log.info("Running program with positive ratio classifier limit of %3.2f%%." % (pos_ratio*100))
 
+    ReadIn = True
     limit_input = False
     limit_value = 1000
     GetTestingData = False
+    MakeClassifierGraphs = False
     SteamAPI = False
     SteamSpy = False
-    TestInput = True
-    MakeGraphs = False
+    TestInput = False
+    MakeGraphs = True
     TestClassifiers = False
     NumberOfTestInputs = 2
-    GenerateGames = True
+    GenerateGames = False
+    RandomGenStats = True
     NumberOfGenerated = 1000
 
     if GetTestingData:
@@ -65,20 +68,21 @@ def main():
             request.requestEachAppToJSON_SteamAPI(applist)
     else:
 
-        log.processing("Gathering JSON Dictionaries from Files")
-        apps = parse.readDirectoryJSON(F_APPS,lim=limit_input,lim_value=limit_value)
-        log.info("Gathered %d app data." % len(apps))
-        
-        log.processing("Converting JSON data to Game Objects")
-        games = pp.CreateGames(apps,pos_ratio)
-        log.info("%d games created." % len(games))
+        if ReadIn:
+            log.processing("Gathering JSON Dictionaries from Files")
+            apps = parse.readDirectoryJSON(F_APPS,lim=limit_input,lim_value=limit_value)
+            log.info("Gathered %d app data." % len(apps))
+            
+            log.processing("Converting JSON data to Game Objects")
+            games = pp.CreateGames(apps,pos_ratio)
+            log.info("%d games created." % len(games))
 
-        log.processing("Gathering SteamSpy JSON Dictionaries from files")
-        spy = parse.readDirectoryJSON(F_SPY,lim=limit_input,lim_value=limit_value)
-        log.info("Gathered %d steamspy data." % len(spy))
+            log.processing("Gathering SteamSpy JSON Dictionaries from files")
+            spy = parse.readDirectoryJSON(F_SPY,lim=limit_input,lim_value=limit_value)
+            log.info("Gathered %d steamspy data." % len(spy))
 
-        log.processing("Adding SteamSpy JSON data to Game Objects")
-        pp.ProcessAddSteamSpy(spy,games)
+            log.processing("Adding SteamSpy JSON data to Game Objects")
+            pp.ProcessAddSteamSpy(spy,games)
 
         # Remove old and irrelevant games from the list
         old_len = len(games)
@@ -144,14 +148,23 @@ def main():
             log.processing("Testing Classifiers")
             clf.testClassifiers(F_OUT,games,pos_ratio,sampleperc=0.7,show=False)#,TestKNN=False,TestNNetwork=False,TestNBayes=False,TestDTree=False,TestRForest=False)
 
-        if MakeGraphs:
+        if MakeClassifierGraphs:
             log.processing("Creating Classifier Data Graphs")
             plt.createClassifierGraphs(F_OUT,"%s/classifier_data/" % F_OUT)
 
-        log.processing("Classifying Test Games")
-        clf.predict(F_OUT,games,test_games)
+        if RandomGenStats:
+            log.processing("Creating Statistic Graphs for Randomly Generated Games")
+            plt.createRandomGameGraphs(F_OUT,F_OUT,all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
+
+        if len(test_games) > 0:
+            log.processing("Classifying Test Games")
+            clf.predict(F_OUT,games,test_games)
 
 if __name__ == "__main__":
     log.starting()
+    #while False:
+    #try:
     main()
+    #except Exception as e:
+    #    log.info(e)
     log.ending()

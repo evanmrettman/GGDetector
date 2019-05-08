@@ -6,6 +6,7 @@ import matplotlib.ticker as mticker
 from matplotlib.ticker import FuncFormatter
 from os import listdir
 import files.parse as parse 
+import pproc.pproc as pp
 
 green = '#42f471'
 red = '#f44141'
@@ -84,9 +85,27 @@ def plotBoxplot(name,xlabel,ylabel,catagories,data,fp,c_min,c_max):
     plt.ylabel(ylabel)
     plt.tight_layout()
     fig.savefig("%s/boxplot_%s.png" % (fp,str.lower(name).replace(" ","_").replace(">","")))
-    fig.gcf()
+    #fig.gcf()
 
-def createGameGraphs(fp,games_dict):
+def createRandomGameGraphs(fp_in,fp_out, plats, cats, devs, pubs, genres, langs, tags):
+    classified_games = parse.readCSV("%s/classified_games.csv" % fp_in)
+    
+    positive = defaultdict(int)
+    negative = defaultdict(int)
+
+    for game_data in classified_games:
+        appid = game_data[0][5:]
+        if appid.isdigit():
+            appid = int(appid)
+            if game_data[1] == "True":
+                positive[appid] = pp.inputGame(pp.generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed=appid))
+            else:
+                negative[appid] = pp.inputGame(pp.generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed=appid))
+
+    createGameGraphs(fp_out,positive,name="Successful")
+    createGameGraphs(fp_out,negative,name="Unsuccessful")
+
+def createGameGraphs(fp,games_dict, name=None):
 
     global green
     global red
@@ -98,6 +117,7 @@ def createGameGraphs(fp,games_dict):
     publishers = defaultdict(int)
     platforms = defaultdict(int)
     catagories = defaultdict(int)
+    languages = defaultdict(int)
     genres = defaultdict(int)
     sscount = []
     mvcount = []
@@ -121,6 +141,8 @@ def createGameGraphs(fp,games_dict):
                 publishers[pub] += 1
             else:
                 publishers["No Publisher Listed"] += 1
+        for lang in game.get_supported_languages():
+            languages[lang] += 1
         for key, value in game.get_platforms().items():
             if value:
                 platforms[key] += 1
@@ -145,14 +167,18 @@ def createGameGraphs(fp,games_dict):
 
 
     #plotHistogram("App Types","Percent","App Count",types,fp)
-    plotHistogram("Ages","What is the age requirement for games with age limits?",ages,fp,red,green)
-    plotHistogram("Free Status","Is the game free?",free,fp,green,red)
-    plotHistogram("Genres","What are the top genres of games?",genres,fp,red,green)
-    plotHistogram("Developers","Who are the top developers?",developers,fp,red,green)
-    plotHistogram("Publishers","Who are the top publishers?",publishers,fp,red,green)
-    plotHistogram("Platforms","Whare are the supported operating systems?",platforms,fp,red,green)
-    plotHistogram("Catagories","What catagories does the game have?",catagories,fp,red,green)
-    plotHistogram("Release Date","When was the game released?",release,fp,red,green)
+    plotHistogram("Ages" if name == None else ("Ages [%s]" % name),"What is the age requirement for games with age limits?",ages,fp,red,green)
+    plotHistogram("Free Status" if name == None else ("Free Status [%s]" % name),"Is the game free?",free,fp,green,red)
+    plotHistogram("Genres" if name == None else ("Genres [%s]" % name),"What are the top genres of games?",genres,fp,red,green)
+    plotHistogram("Developers" if name == None else ("Developers [%s]" % name),"Who are the top developers?",developers,fp,red,green)
+    plotHistogram("Publishers" if name == None else ("Publishers [%s]" % name),"Who are the top publishers?",publishers,fp,red,green)
+    plotHistogram("Platforms" if name == None else ("Platforms [%s]" % name),"Whare are the supported operating systems?",platforms,fp,red,green)
+    if len(catagories) > 0:
+        plotHistogram("Catagories" if name == None else ("Catagories [%s]" % name),"What catagories does the game have?",catagories,fp,red,green)
+    if len(release) > 0:
+        plotHistogram("Release Date" if name == None else ("Release Date [%s]" % name),"When was the game released?",release,fp,red,green)
+    if len(languages) > 0:
+        plotHistogram("Languages" if name == None else ("Languages [%s]" % name),"When was the game released?",languages,fp,red,green)
     if False:
         plt.show()
 
@@ -189,4 +215,5 @@ def plotHistogram(name,xlabel,d,fp,c_min,c_max):
     #plt.ylabel(ylabel)
     plt.tight_layout()
     fig.savefig("%s/histogram_%s.png" % (fp,str.lower(name)))
-    fig.gcf()
+    #fig.gcf()
+    plt.close('all')

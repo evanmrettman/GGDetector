@@ -40,6 +40,7 @@ class Game:
 
     __vector = []
 
+
     def __initHelp(self,d,key,default_value):
         return d[key] if key in d.keys() else default_value
         # improve this to have a better default value other than None
