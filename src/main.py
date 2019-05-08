@@ -51,7 +51,7 @@ def main():
     MakeGraphs = False
     TestClassifiers = False
     NumberOfTestInputs = 2
-    GenerateGames = False
+    GenerateGames = True
     RandomGenStats = True
     NumberOfGenerated = 1000
 
@@ -152,19 +152,19 @@ def main():
             log.processing("Creating Classifier Data Graphs")
             plt.createClassifierGraphs(F_OUT,"%s/classifier_data/" % F_OUT)
 
-        if RandomGenStats:
-            log.processing("Creating Statistic Graphs for Randomly Generated Games")
-            plt.createRandomGameGraphs(F_OUT,F_OUT,all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
-
         if len(test_games) > 0:
             log.processing("Classifying Test Games")
             clf.predict(F_OUT,games,test_games)
 
+        if RandomGenStats:
+            log.processing("Creating Statistic Graphs for Randomly Generated Games")
+            plt.createRandomGameGraphs(F_OUT,F_OUT,all_platforms,all_categories,all_developers,all_publishers,all_genres,all_langs,all_tags)
+
 if __name__ == "__main__":
     log.starting()
-    #while False:
-    #try:
-    main()
-    #except Exception as e:
-    #    log.info(e)
+    while False:
+        try:
+            main()
+        except Exception as e:
+            log.info(e)
     log.ending()
