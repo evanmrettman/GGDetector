@@ -48,7 +48,7 @@ def main():
     SteamAPI = False
     SteamSpy = False
     TestInput = False
-    MakeGraphs = True
+    MakeGraphs = False
     TestClassifiers = False
     NumberOfTestInputs = 2
     GenerateGames = False
