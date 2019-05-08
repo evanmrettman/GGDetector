@@ -43,12 +43,12 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
     if (random.randint(0,1)):
         randJSON["is_free"] = False
     
-    randJSON["developers"] = "Ryan and Evan"
+    randJSON["developers"] = ["Ryan and Evan"]
     if (len(devs) and random.randint(0,6)):
         rand = random.randint(0,len(devs)-1)
         randJSON["developers"] = [devs[rand]]
     
-    randJSON["publishers"] = "Ryan and Evan"
+    randJSON["publishers"] = ["Ryan and Evan"]
     if (len(pubs) and random.randint(0,6)):
         rand = random.randint(0,len(pubs)-1)
         randJSON["publishers"] = [pubs[rand]]
