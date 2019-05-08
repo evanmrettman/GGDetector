@@ -69,7 +69,7 @@ def generateRandomGame(plats, cats, devs, pubs, genres, langs, tags, seed = None
     if len(cats):
         for x in range(0, random.randint(1,len(cats))):
             temp_cats.append({"id": x, "description": cats[random.randint(0,len(cats)-1)]})
-    randJSON["cats"] = temp_cats
+    randJSON["categories"] = temp_cats
 
     temp_genres = []
     if len(genres):
