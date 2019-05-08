@@ -51,9 +51,9 @@ def main():
     MakeGraphs = False
     TestClassifiers = False
     NumberOfTestInputs = 2
-    GenerateGames = True
+    GenerateGames = False
     RandomGenStats = True
-    NumberOfGenerated = 1000
+    NumberOfGenerated = 100
 
     if GetTestingData:
         log.processing("Gathering Application List")
@@ -162,7 +162,7 @@ def main():
 
 if __name__ == "__main__":
     log.starting()
-    while False:
+    if True:
         try:
             main()
         except Exception as e:
